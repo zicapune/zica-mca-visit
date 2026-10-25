@@ -462,6 +462,9 @@
     };
   })();
 
+  /* ---------- Code Lab hooks (assets/lab.js) ---------- */
+  if (window.LAB_HOOKS) Object.keys(window.LAB_HOOKS).forEach(function (k) { hooks[k] = window.LAB_HOOKS[k]; });
+
   /* ---------- start ---------- */
   (function () {
     var m = (location.hash || '').match(/^#(\d+)(?:\.(\d+))?/);

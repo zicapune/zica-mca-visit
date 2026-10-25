@@ -110,7 +110,121 @@
       <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5"/></svg></div><div class="idx">08</div><div class="nm">Composite</div><div class="tools">Nuke, After Effects</div></div>
     </div>
     <p class="lead pipe-foot" data-step="1">Eight departments. Hundreds of artists. And a <span class="white">lot</span> of code holding it together.</p>
-    <aside class="notes">The stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code. (Covers the "Digital production pipelines" point from the proposal.)</aside>
+    <aside class="notes">The stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code, which leads straight into the Code Lab. (Covers the "Digital production pipelines" point from the proposal.)</aside>
+  </section>
+
+  <!-- ============ CODE LAB · chapter ============ -->
+  <section class="slide floor" id="s-lab" data-title="Code Lab">
+    <div class="slide-title-tag">Code Lab</div>
+    <h1 class="h-mega">Code Lab.</h1>
+    <p class="lead" style="margin-top:36px;max-width:36ch">Seven departments of a studio. Seven pieces of code you already understand.</p>
+    <ol class="lab-chips" data-step="1"><li><b>01</b>Texture</li><li><b>02</b>Modelling</li><li><b>03</b>Environments</li><li><b>04</b>Rigging</li><li><b>05</b>Animation and UI/UX</li><li><b>06</b>Lighting and rendering</li><li><b>07</b>VFX and crowds</li></ol>
+    <aside class="notes">Chapter card. "Let's open each department and look at the code running inside it." Click once to show the seven stops, then go. Each Code Lab slide: the amber numbers in the code can be dragged with the mouse; the clicker plays the planned changes.</aside>
+  </section>
+  <!-- ============ CODE LAB 1 · Texture ============ -->
+  <section class="slide lab" id="s-lab-img" data-title="Lab 1: Every photo is a 2D array." data-hook="lab-img">
+    <div class="slide-title-tag">Code Lab 1 of 7 · Texture</div>
+    <h2 class="h2">Every photo is a 2D array.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; filter.js</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>2D arrays and matrices</b>.</p>
+        <p class="lab-say" data-say='[&quot;A sunset. Or is it?&quot;, &quot;Zoom in. It was numbers all along.&quot;, &quot;Change two numbers: edge detection. Photoshop does exactly this.&quot;, &quot;Two different numbers: blur.&quot;]'>A sunset. Or is it?</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i>
+    <aside class="notes">Step 1 zooms into the pixels so the numbers appear. Step 2 turns it into edge detection (C=8, N=−1). Step 3 makes it a blur (all 1s). Then drag C and N yourself. Line: "Every filter in Photoshop and Instagram is a small grid of numbers sliding over a big grid of numbers. That is a nested for-loop you wrote in second semester." Upload media/lab/photo.jpg to use a real photo instead of the generated sunset.</aside>
+  </section>
+  <!-- ============ CODE LAB 2 · Modelling ============ -->
+  <section class="slide lab" id="s-lab-tree" data-title="Lab 2: Recursion grows trees." data-hook="lab-tree">
+    <div class="slide-title-tag">Code Lab 2 of 7 · Modelling</div>
+    <h2 class="h2">Recursion grows trees.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; tree.js</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>Recursion</b>.</p>
+        <p class="lab-say" data-say='[&quot;One line. Depth = 1.&quot;, &quot;Same function, deeper: a tree grows itself.&quot;, &quot;Change the angle: it turns into a fractal.&quot;, &quot;Back to nature.&quot;]'>One line. Depth = 1.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i>
+    <aside class="notes">Step 1 grows the tree from depth 1 to 11 live. Step 2 changes the angle to 88° (geometric fractal). Step 3 returns to a natural tree. Drag ANGLE slowly for the "wow". Line: "Remember recursion and the base case? Studios grow forests like this instead of modelling every branch."</aside>
+  </section>
+  <!-- ============ CODE LAB 3 · Environments ============ -->
+  <section class="slide lab" id="s-lab-noise" data-title="Lab 3: One function. Infinite worlds." data-hook="lab-noise">
+    <div class="slide-title-tag">Code Lab 3 of 7 · Environments</div>
+    <h2 class="h2">One function. Infinite worlds.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; terrain.js</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>Functions and randomness</b>.</p>
+        <p class="lab-say" data-say='[&quot;A world made of one noise function.&quot;, &quot;Change the seed: a different planet.&quot;, &quot;Add one line: now we fly.&quot;]'>A world made of one noise function.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i>
+    <aside class="notes">Step 1 scrolls the seed to show endless new worlds. Step 2 starts the fly-over. Drag HEIGHT to flatten or raise mountains, SCALE to zoom the landscape. Line: "Open-world games generate terrain from functions like this, so the world never has to be stored in full."</aside>
+  </section>
+  <!-- ============ CODE LAB 4 · Rigging ============ -->
+  <section class="slide lab" id="s-lab-ik" data-title="Lab 4: Rigging is just maths." data-hook="lab-ik">
+    <div class="slide-title-tag">Code Lab 4 of 7 · Rigging</div>
+    <h2 class="h2">Rigging is just maths.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; ik.js</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>Trigonometry and loops</b>.</p>
+        <p class="lab-say" data-say='[&quot;A robot arm reaching for a target.&quot;, &quot;Same code, 14 bones: a tentacle.&quot;]'>A robot arm reaching for a target.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i>
+    <aside class="notes">Move your mouse over the panel and the arm follows it; leave it and the target wanders on its own. Step 1 changes it to 14 short bones. Line: "This is inverse kinematics. Every character that reaches, walks or grabs uses an IK solver. Two loops, run every frame."</aside>
+  </section>
+  <!-- ============ CODE LAB 5 · Animation and UI/UX ============ -->
+  <section class="slide lab" id="s-lab-ease" data-title="Lab 5: One curve decides &quot;smooth&quot;." data-hook="lab-ease">
+    <div class="slide-title-tag">Code Lab 5 of 7 · Animation and UI/UX</div>
+    <h2 class="h2">One curve decides &quot;smooth&quot;.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; card.css</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>CSS</b>.</p>
+        <p class="lab-say" data-say='[&quot;Linear: correct, and lifeless.&quot;, &quot;Ease-out: this is why good apps feel expensive.&quot;, &quot;Push past 1: a springy overshoot.&quot;]'>Linear: correct, and lifeless.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i>
+    <aside class="notes">Top lane is always linear for comparison. Step 1 = ease-out, step 2 = springy overshoot. Drag Y1 above 1 for bounce. Line: "Same code, same 0.9 seconds. Four numbers decide whether your app feels cheap or premium. That is UI/UX meeting front-end."</aside>
+  </section>
+  <!-- ============ CODE LAB 6 · Lighting and rendering ============ -->
+  <section class="slide lab" id="s-lab-shader" data-title="Lab 6: This code runs for every pixel." data-hook="lab-shader">
+    <div class="slide-title-tag">Code Lab 6 of 7 · Lighting and rendering</div>
+    <h2 class="h2">This code runs for every pixel.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; glow.frag</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>Parallel computing</b>.</p>
+        <p class="lab-say" data-say='[&quot;A shader: a tiny program the GPU runs for every pixel at once.&quot;, &quot;Change one number: frequency.&quot;, &quot;Change speed and glow.&quot;]'>A shader: a tiny program the GPU runs for every pixel at once.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i>
+    <aside class="notes">Point at the counter in the corner: millions of runs a second, live. Step 1 raises FREQ, step 2 raises SPEED and GLOW. Line: "Every light, every water surface and every glow you see in a game is a program like this running on the graphics card."</aside>
+  </section>
+  <!-- ============ CODE LAB 7 · VFX and crowds ============ -->
+  <section class="slide lab" id="s-lab-boids" data-title="Lab 7: Three rules make a flock." data-hook="lab-boids">
+    <div class="slide-title-tag">Code Lab 7 of 7 · VFX and crowds</div>
+    <h2 class="h2">Three rules make a flock.</h2>
+    <div class="lab-grid">
+      <div class="lab-left">
+        <div class="editor"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; flock.js</div><pre class="lab-code"></pre></div>
+        <p class="lab-hook">You learned this as <b>Algorithms and simulation</b>.</p>
+        <p class="lab-say" data-say='[&quot;240 birds. Three rules. Nobody in charge.&quot;, &quot;Switch off alignment and cohesion: chaos.&quot;, &quot;Turn cohesion up: a tight swarm.&quot;]'>240 birds. Three rules. Nobody in charge.</p>
+      </div>
+      <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
+    </div>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i>
+    <aside class="notes">Move the mouse into the flock and it scatters (the mouse acts as a hawk). Step 1 = chaos, step 2 = tight swarm. Line: "This is Craig Reynolds' boids algorithm from 1986. Flocks, crowds and swarms in films and games still start from these three rules."</aside>
   </section>
 
   <!-- ============ 6 · CODE EVERYWHERE ============ -->
@@ -339,6 +453,7 @@
 
 <script src="assets/config.js"></script>
 <script src="assets/media.js"></script>
+<script src="assets/lab.js"></script>
 <script src="assets/deck.js"></script>
 </body>
 </html>
