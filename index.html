@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZICA × ASM IBMR</title>
+<meta name="description" content="ZICA Pune — industrial visit deck for ASM IBMR MCA students">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 10-9 10-9-10z' fill='%23ffb547'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/fonts.css">
+<link rel="stylesheet" href="assets/deck.css">
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <div class="brand no-logo" id="brand"><img alt="ZICA" hidden><div class="word">ZICA <span>Pune</span></div></div>
+
+  <!-- ============ 1 · COLD OPEN ============ -->
+  <section class="slide" id="s-open" data-title="Cold open" data-hook="open">
+    <div class="vslot" data-video="media/hero.mp4">
+      <div class="fallback"><canvas id="torus" width="1100" height="1100"></canvas></div>
+      <div class="shade"></div>
+    </div>
+    <div class="copy">
+      <h1 class="h-mega">You write the code. We make it move.</h1>
+      <p class="lead">ZICA Pune welcomes the MCA students of ASM IBMR.</p>
+    </div>
+    <div class="render-label" id="renderLabel">wireframe</div>
+    <aside class="notes">Let the visual run 5 seconds before speaking. Press → once: the wireframe "renders" — that's ~60 lines of JavaScript drawing it live, no image. Line: "Everything you'll see today sits where your code meets a screen." If media/hero.mp4 is uploaded, it plays here instead.</aside>
+  </section>
+
+  <!-- ============ 2 · ZICA ============ -->
+  <section class="slide floor" id="s-zica" data-title="Who we are">
+    <div class="slide-title-tag">Who we are</div>
+    <div class="since">
+      <div class="year"><span data-count="1995" data-from="1960">1995</span></div>
+      <div class="facts">
+        <div class="fact" data-step="1"><div class="h3">India's first full-fledged classical and digital animation academy</div></div>
+        <div class="fact" data-step="2"><div class="h3">30+ centres across 15+ cities</div><div class="small">Started in Mumbai. Kothrud is one of them.</div></div>
+        <div class="fact" data-step="3"><div class="h3">Backed by the Zee group</div><div class="small">The people behind one of India's largest TV networks.</div></div>
+      </div>
+    </div>
+    <p class="src">Sources: zicaindia.com, zicabangalore.com/about-zica</p>
+    <aside class="notes">Keep this to 40 seconds. "31 years of teaching pixels to behave." The facts on screen are sourced from ZICA's own sites. Don't add numbers you can't back if someone Googles them live — this room will.</aside>
+  </section>
+
+  <!-- ============ 3 · STORY ============ -->
+  <section class="slide" id="s-story" data-title="The story" data-hook="story">
+    <div class="slide-title-tag">The story</div>
+    <h2 class="h2">There was a time a computer in an Indian office only did spreadsheets.</h2>
+    <div class="story">
+      <div class="monitor" id="monitor">
+        <div class="sheet" id="sheet"></div>
+        <div class="vp">
+          <svg viewBox="0 0 760 470" aria-hidden="true">
+            <defs>
+              <radialGradient id="sph" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#ffd7a0"/><stop offset=".45" stop-color="#ff7a1a"/><stop offset="1" stop-color="#3a1608"/></radialGradient>
+              <radialGradient id="sph2" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#d9fbff"/><stop offset=".5" stop-color="#5ce1e6"/><stop offset="1" stop-color="#0c3a44"/></radialGradient>
+              <linearGradient id="flr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2f42" stop-opacity="0"/><stop offset="1" stop-color="#2b2f42"/></linearGradient>
+            </defs>
+            <g stroke="#2b2f42" stroke-width="1">
+              <path d="M0 330 L760 330 M-200 470 L380 300 L960 470 M120 470 L380 300 M640 470 L380 300 M0 380 L760 380 M0 430 L760 430"/>
+            </g>
+            <ellipse cx="300" cy="352" rx="120" ry="16" fill="#000" opacity=".5"/>
+            <circle cx="300" cy="240" r="112" fill="url(#sph)"/>
+            <ellipse cx="530" cy="345" rx="70" ry="10" fill="#000" opacity=".5"/>
+            <circle cx="530" cy="285" r="62" fill="url(#sph2)"/>
+            <rect x="150" y="330" width="60" height="60" fill="#ffb547" opacity=".9" transform="rotate(-12 180 360)"/>
+          </svg>
+          <div class="hud">Viewport · Cycles · 128 samples</div>
+        </div>
+      </div>
+      <div class="stack">
+        <p class="h3" data-step="1">Then studios needed machines that could render.</p>
+        <p class="h3" data-step="2">Animation changed what a computer in India was for.</p>
+        <p class="h3 amber" data-step="3">ZICA trained the people who drove those machines.</p>
+      </div>
+    </div>
+    <aside class="notes">This is YOUR story to tell — the pioneer bit (early animation workstations, US/Europe projects coming to India) is spoken, not on screen, because I couldn't find a public source for it. Step 1 wipes the spreadsheet into a 3D viewport. Keep it to a minute.</aside>
+  </section>
+
+  <!-- ============ 4 · YOU ALREADY SPEAK IT ============ -->
+  <section class="slide" id="s-code" data-title="You already speak it" data-hook="code">
+    <div class="slide-title-tag">You already speak it</div>
+    <h2 class="h2">You already speak this language.</h2>
+    <div class="code-split">
+      <div class="editor">
+        <div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; city.py — Blender</div>
+        <pre id="typed"></pre>
+      </div>
+      <div>
+        <div class="cubes" id="cubes"></div>
+        <p class="body" data-step="1"><span class="white">That's Blender.</span> The same Python you wrote for your practicals, building 3D objects instead of printing output.</p>
+      </div>
+    </div>
+    <aside class="notes">The code types itself and the blocks drop in as each loop iteration "runs". Ask: "Who here has written a for-loop?" Every hand goes up. "Then you can already script a 3D scene." This tees up the live Blender demo later.</aside>
+  </section>
+
+  <!-- ============ 5 · PIPELINE ============ -->
+  <section class="slide" id="s-pipe" data-title="The pipeline" data-hook="pipe">
+    <div class="slide-title-tag">How a frame gets made</div>
+    <h2 class="h2">Every frame you've ever watched went down this line.</h2>
+    <div class="pipe" id="pipe">
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5V16h8v-2.5A6 6 0 0 0 12 3z"/></svg></div><div class="idx">01</div><div class="nm">Concept</div><div class="tools">Photoshop, Gen AI</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7zM12 12l9-5M12 12v10M12 12L3 7"/></svg></div><div class="idx">02</div><div class="nm">Model</div><div class="tools">Maya, Blender, ZBrush</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3zM3 9h18M3 15h18M9 3v18M15 3v18"/></svg></div><div class="idx">03</div><div class="nm">Texture</div><div class="tools">Substance Painter</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M6 18l6-6 6-6M12 12l6 6M4 18a2 2 0 1 0 4 0a2 2 0 1 0-4 0M16 6a2 2 0 1 0 4 0a2 2 0 1 0-4 0M16 18a2 2 0 1 0 4 0a2 2 0 1 0-4 0"/></svg></div><div class="idx">04</div><div class="nm">Rig</div><div class="tools">Maya, Python</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M2 12h20M7 9l3 3-3 3-3-3zM17 9l3 3-3 3-3-3z"/></svg></div><div class="idx">05</div><div class="nm">Animate</div><div class="tools">Maya, Blender</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M12 4V2M12 22v-2M4 12H2M22 12h-2M5.6 5.6L4.2 4.2M19.8 19.8l-1.4-1.4M5.6 18.4l-1.4 1.4M19.8 4.2l-1.4 1.4M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/></svg></div><div class="idx">06</div><div class="nm">Light</div><div class="tools">Unreal, Arnold</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M3 7h13v10H3zM16 10l5-3v10l-5-3"/></svg></div><div class="idx">07</div><div class="nm">Render</div><div class="tools">Cycles, render farms</div></div>
+      <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5"/></svg></div><div class="idx">08</div><div class="nm">Composite</div><div class="tools">Nuke, After Effects</div></div>
+    </div>
+    <p class="lead pipe-foot" data-step="1">Eight departments. Hundreds of artists. And a <span class="white">lot</span> of code holding it together.</p>
+    <aside class="notes">The stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code. (Covers the "Digital production pipelines" point from the proposal.)</aside>
+  </section>
+
+  <!-- ============ 6 · CODE EVERYWHERE ============ -->
+  <section class="slide" id="s-tech" data-title="Where code hides">
+    <div class="slide-title-tag">Where your code fits</div>
+    <h2 class="h2">Your degree already has a seat in this industry.</h2>
+    <div class="pairs">
+      <div class="pair" data-step="1"><div class="lang">Python</div><div class="h3">Tools inside Blender and Maya</div><div class="small">One script replaces a day of clicking for 50 artists.</div></div>
+      <div class="pair" data-step="1"><div class="lang">GLSL / HLSL</div><div class="h3">Shaders</div><div class="small">Maths that decides how light hits every surface.</div></div>
+      <div class="pair" data-step="1"><div class="lang">C++ / Blueprints</div><div class="h3">Unreal Engine games</div><div class="small">Gameplay, physics, real-time worlds.</div></div>
+      <div class="pair" data-step="2"><div class="lang">Pipeline scripts</div><div class="h3">Studio automation</div><div class="small">Moving, versioning and rendering thousands of files.</div></div>
+      <div class="pair" data-step="2"><div class="lang">Three.js / WebXR</div><div class="h3">3D and AR in the browser</div><div class="small">Product configurators, virtual try-ons, web experiences.</div></div>
+      <div class="pair" data-step="2"><div class="lang">APIs + AI</div><div class="h3">Generative workflows</div><div class="small">Wiring image and video models into real production.</div></div>
+    </div>
+    <aside class="notes">(Covers "Technology integration in creative industries".) Don't read the cards. Pick one per row and give a 10-second example. AR/VR lives in the Three.js/WebXR card.</aside>
+  </section>
+
+  <!-- ============ 7 · DEV vs DESIGNED ============ -->
+  <section class="slide" id="s-ux" data-title="Works vs feels right">
+    <div class="slide-title-tag">UI/UX</div>
+    <h2 class="h2">Your app works. Does anyone want to use it?</h2>
+    <div class="versus">
+      <div class="wrap-phone">
+        <div class="phone ugly">
+          <h4>LOGIN PAGE</h4>
+          <label>Enter Username:</label><input value="">
+          <label>Enter Password :</label><input type="password" value="">
+          <br><button>Submit</button>
+          <div class="err">Error: null</div>
+          <div class="tiny">click here if forgot password</div>
+        </div>
+        <div class="cap">Built by a developer</div>
+      </div>
+      <div class="vs-mid">vs</div>
+      <div class="wrap-phone" data-step="1">
+        <div class="phone pretty">
+          <div class="av"></div>
+          <h4>Welcome back</h4>
+          <p>Pick up where you left off.</p>
+          <div class="fld">aarav@ibmr.in</div>
+          <div class="fld">••••••••••</div>
+          <div class="cta">Sign in</div>
+          <div class="alt">Forgot password?</div>
+        </div>
+        <div class="cap">Designed by someone who knows UI/UX</div>
+      </div>
+    </div>
+    <aside class="notes">Get the laugh on the left one first ("who's shipped this in a mini-project? Be honest."). → reveals the right. Line: "Same backend. Same code. One gets used." (Covers "UI/UX design and interactive applications".)</aside>
+  </section>
+
+  <!-- ============ 8 · PLANS ============ -->
+  <section class="slide" id="s-plans" data-title="Pick a path" data-hook="plans">
+    <div class="draft-tag">Draft: confirm software lists</div>
+    <div class="slide-title-tag">Pick a path</div>
+    <h2 class="h2">Pick a path. Every one of them has code in it.</h2>
+    <div class="plans" id="plans"></div>
+    <aside class="notes">Read it like a pricing page, longest track first. Don't mention fees. Land on UI/UX: "4 months is one semester-break-and-a-bit." Course lists come from assets/config.js.</aside>
+  </section>
+
+  <!-- ============ 9 · UI/UX SPOTLIGHT ============ -->
+  <section class="slide" id="s-uiux" data-title="UI/UX in 4 months" data-hook="uiux">
+    <div class="draft-tag">Draft: confirm software lists</div>
+    <div class="slide-title-tag">UI/UX Design</div>
+    <h2 class="h2">4 months. One portfolio. A side income.</h2>
+    <div class="spot">
+      <div>
+        <p class="lead">You already know the front-end. We teach you what goes on it.</p>
+        <div class="tools-row" id="uiuxTools"></div>
+        <div class="artboard" aria-hidden="true">
+          <div class="frm f1"><b></b><i></i><i></i><i class="s"></i><u></u></div>
+          <div class="frm f2 sel"><b></b><i></i><i class="s"></i><u></u><em class="h1x"></em><em class="h2x"></em><em class="h3x"></em><em class="h4x"></em><span class="dim">390 × 844</span></div>
+          <div class="frm f3"><b></b><i></i><i></i><i class="s"></i><u></u></div>
+        </div>
+      </div>
+      <ul class="ships" id="ships"></ul>
+    </div>
+    <aside class="notes">The pitch: MCA + UI/UX = the person who can design AND build the screen. Clients pay more for one person who does both. Next slide shows what that pays.</aside>
+  </section>
+
+  <!-- ============ 10 · RATES ============ -->
+  <section class="slide" id="s-rates" data-title="What it pays per hour">
+    <div class="slide-title-tag">The money</div>
+    <h2 class="h2">What freelance UI/UX designers in India charge per hour.</h2>
+    <div class="rates">
+      <div class="rate" data-step="1"><div class="lv">Beginner<small>0–2 years</small></div><div class="bar"><i style="left:0;width:20%"></i></div><div class="amt">₹800–1,500</div></div>
+      <div class="rate" data-step="2"><div class="lv">Intermediate<small>2–5 years</small></div><div class="bar"><i style="left:0;width:55%"></i></div><div class="amt">₹1,500–3,000</div></div>
+      <div class="rate" data-step="3"><div class="lv">Experienced<small>5+ years</small></div><div class="bar"><i style="left:0;width:100%"></i></div><div class="amt">₹3,000–4,000+</div></div>
+    </div>
+    <div class="intl" data-step="4"><span class="big">$20–50/hr</span><span class="lead">from international clients, for Indian freelancers.</span></div>
+    <p class="src">Source: Xflow, "Freelancer charges in India 2026" (Sep 2026)</p>
+    <aside class="notes">Build each bar on its own click. Pause after the $20–50 line: "That's ₹1,700 to ₹4,200 an hour, from your laptop." All figures are from the source in the corner.</aside>
+  </section>
+
+  <!-- ============ 11 · PRICE TAGS ============ -->
+  <section class="slide" id="s-tags" data-title="What one project pays">
+    <div class="slide-title-tag">The money</div>
+    <h2 class="h2">Or price it per project.</h2>
+    <div class="tags">
+      <div class="tagc uiux" data-step="1"><div class="what">One landing page</div><div class="price">₹40K–1.2L</div><div class="per">Design, India</div></div>
+      <div class="tagc uiux" data-step="1"><div class="what">One app screen</div><div class="price">₹3K–25K</div><div class="per">Per screen, freelance, India</div></div>
+      <div class="tagc uiux" data-step="1"><div class="what">App MVP design</div><div class="price">₹60K–3L</div><div class="per">Whole app, first version</div></div>
+      <div class="tagc" data-step="2"><div class="what">Stylised 3D game character</div><div class="price">$360–8,400</div><div class="per">Per character, 3–7 days</div></div>
+      <div class="tagc" data-step="2"><div class="what">Motion designer on Upwork</div><div class="price">$18–35/hr</div><div class="per">Median rate</div></div>
+      <div class="tagc" data-step="2"><div class="what">Simple 3D game prop</div><div class="price">$120–2,400</div><div class="per">Per prop</div></div>
+    </div>
+    <p class="src">Sources: Zethic (2026), Pen on Paper / DigiFlute (2026), RocketBrush (May 2025), LottieFiles / Upwork</p>
+    <aside class="notes">Top row = UI/UX (the hero). Bottom row = game art and motion, so the other tracks aren't left out. Line: "One landing page a month pays more than most internships."</aside>
+  </section>
+
+  <!-- ============ 12 · CALCULATOR ============ -->
+  <section class="slide" id="s-calc" data-title="Do the math" data-hook="calc">
+    <div class="slide-title-tag">Do the math</div>
+    <h2 class="h2">Weekends only. Do the math.</h2>
+    <div class="calc">
+      <div>
+        <div class="ctrl"><div class="row"><span class="lab">Hours a week</span><span class="val" id="hVal">10</span></div><input type="range" id="hours" aria-label="Hours a week"></div>
+        <div class="ctrl"><div class="row"><span class="lab">Your rate per hour</span><span class="val" id="rVal">₹1,200</span></div><input type="range" id="rate" aria-label="Rate per hour"></div>
+      </div>
+      <div class="result">
+        <div class="small">A month</div>
+        <div class="month" id="mVal">₹52,000</div>
+        <div class="year" id="yVal">₹6.2 lakh a year</div>
+        <div class="fine">Hours × rate × 4.33 weeks. Rate range from the Indian freelance rate card on the earlier slide.</div>
+      </div>
+    </div>
+    <aside class="notes">Interactive. Click a slider, then use ← → keys or drag (the deck ignores arrow keys while a slider is focused; click empty space to give arrows back to the deck). Ask a student to call out hours. Push the rate to ₹3,000 for the gasp.</aside>
+  </section>
+
+  <!-- ============ 13 · CAREERS ============ -->
+  <section class="slide" id="s-roles" data-title="Where you land">
+    <div class="slide-title-tag">Careers</div>
+    <h2 class="h2">MCA plus creative skills lands you here.</h2>
+    <div class="roles">
+      <div class="role hot" data-step="1"><div class="rn">UI/UX Designer</div><div class="ru">Apps, websites, SaaS products</div></div>
+      <div class="role hot" data-step="1"><div class="rn">Design Engineer</div><div class="ru">Designs it in Figma, ships it in React</div></div>
+      <div class="role" data-step="1"><div class="rn">Product Designer</div><div class="ru">Owns the whole user journey</div></div>
+      <div class="role" data-step="1"><div class="rn">Motion Designer</div><div class="ru">Ads, reels, UI animation</div></div>
+      <div class="role" data-step="1"><div class="rn">Creative Technologist</div><div class="ru">Campaigns, installations, web experiences</div></div>
+      <div class="role" data-step="2"><div class="rn">Technical Artist</div><div class="ru">The bridge between art and engine</div></div>
+      <div class="role" data-step="2"><div class="rn">Pipeline TD</div><div class="ru">Writes the tools studios run on</div></div>
+      <div class="role" data-step="2"><div class="rn">Unreal Developer</div><div class="ru">Games, virtual production, archviz</div></div>
+      <div class="role" data-step="2"><div class="rn">AR/VR Developer</div><div class="ru">Immersive training, retail, events</div></div>
+      <div class="role" data-step="2"><div class="rn">Game Developer</div><div class="ru">Mechanics, systems, tools</div></div>
+    </div>
+    <aside class="notes">(Covers "Emerging career opportunities for MCA graduates".) Row 1 = design-side roles, row 2 = technical roles. Ask: "Which row is you?"</aside>
+  </section>
+
+  <!-- ============ 14 · AI ============ -->
+  <section class="slide" id="s-ai" data-title="Gen AI">
+    <div class="slide-title-tag">Gen AI</div>
+    <h2 class="h2">AI makes the first draft. You make the final one.</h2>
+    <div class="ai-grid">
+      <div class="triad" data-step="1">
+        <div class="c c1"><span>Code</span></div>
+        <div class="c c2"><span>Design</span></div>
+        <div class="c c3"><span>AI</span></div>
+        <div class="you">You</div>
+      </div>
+      <div>
+        <p class="lead" data-step="2">The person who can code, design and direct AI tools is the one every studio is trying to hire right now.</p>
+        <div class="chips" data-step="2"><span>Figma</span><span>Magnific</span><span>Runway</span><span>ComfyUI</span><span>Midjourney</span><span>Claude</span></div>
+      </div>
+    </div>
+    <aside class="notes">Keep it short. The "You" in the middle is the whole pitch. Mention ZICA's Gen AI batch if relevant.</aside>
+  </section>
+
+  <!-- ============ 15 · STUDENT WALL ============ -->
+  <section class="slide" id="s-wall" data-title="Built here" data-hook="wall">
+    <div class="slide-title-tag">Built here</div>
+    <h2 class="h2">Made by students in this building.</h2>
+    <div id="wall"></div>
+    <a class="open-reel" href="reel.html" target="_blank" rel="noopener">Open the full reel</a>
+    <aside class="notes">Fills itself from media/reel/ on GitHub (see media/README.md). Click "Open the full reel" for the full-screen grid with playback. Then lead them out of the deck to the facility walkthrough or the Blender demo.</aside>
+  </section>
+
+  <!-- ============ 16 · LIVE DEMO ============ -->
+  <section class="slide floor" id="s-demo" data-title="Live demo">
+    <div class="live"><i></i>Live</div>
+    <h1 class="h-mega">Enough slides. Let's make Python build a world.</h1>
+    <p class="lead" style="margin-top:40px">Blender, one script, a few seconds.</p>
+    <aside class="notes">Switch to Blender (Alt+Tab). Run the demo script. After the demo, come back and press → for the Creative Quest.</aside>
+  </section>
+
+  <!-- ============ 17 · QUEST ============ -->
+  <section class="slide" id="s-quest" data-title="Creative Quest" data-hook="quest">
+    <div class="slide-title-tag">Your turn</div>
+    <div class="quest">
+      <div>
+        <h2 class="h2">Your turn. Take the ZICA Creative Quest.</h2>
+        <ul class="steps3">
+          <li><b>01</b>Scan the code</li>
+          <li><b>02</b>Answer 15 visual questions</li>
+          <li><b>03</b>Get a certificate with your name on it</li>
+        </ul>
+      </div>
+      <div class="qr-box"><div id="qr"></div></div>
+    </div>
+    <aside class="notes">Give them 5–7 minutes on their phones right here. When the quest is live, paste its URL into QUEST_URL in assets/config.js and the QR appears.</aside>
+  </section>
+
+  <!-- ============ 18 · CLOSE ============ -->
+  <section class="slide floor" id="s-close" data-title="Thank you">
+    <h1 class="h-mega">Thank you,<br>ASM IBMR.</h1>
+    <p class="lead" style="margin-top:44px">ZICA Pune, Kothrud. Come back and build something.</p>
+    <aside class="notes">Open the floor for Q&amp;A.</aside>
+  </section>
+
+  <!-- chrome -->
+  <div class="timeline" id="timeline"><div class="tl-track"></div><div class="tl-fill" id="tlFill"></div><div class="tl-head" id="tlHead" data-f="F 01"></div></div>
+  <div class="help" id="help">
+    <table>
+      <tr><td>→ / Space / PgDn</td><td>Next</td></tr>
+      <tr><td>← / PgUp</td><td>Back</td></tr>
+      <tr><td>F</td><td>Fullscreen</td></tr>
+      <tr><td>P</td><td>Presenter window (notes + timer)</td></tr>
+      <tr><td>T</td><td>Hide / show timeline</td></tr>
+      <tr><td>Home / End</td><td>First / last slide</td></tr>
+      <tr><td>number + Enter</td><td>Jump to slide</td></tr>
+      <tr><td>B</td><td>Blackout</td></tr>
+      <tr><td>?</td><td>This help</td></tr>
+    </table>
+  </div>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/media.js"></script>
+<script src="assets/deck.js"></script>
+</body>
+</html>
