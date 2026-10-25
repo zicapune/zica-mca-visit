@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Reel</title>
+<meta name="description" content="Student work from ZICA Pune, Kothrud">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 10-9 10-9-10z' fill='%23ffb547'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+  :root { --ink:#0d0e13; --ink-2:#15171f; --line:#2b2f42; --text:#eceef4; --mute:#8d93a8; --key:#ffb547; --act:#5ce1e6; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--ink); color: var(--text); font-family: 'Bricolage Grotesque', system-ui, sans-serif; min-height: 100vh; }
+  header { padding: clamp(24px, 4vw, 56px) clamp(16px, 4vw, 64px) 24px; display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; }
+  h1 { font-size: clamp(40px, 7vw, 110px); font-weight: 800; letter-spacing: -.045em; line-height: .9; font-variation-settings: 'wdth' 78; }
+  header p { color: var(--mute); font-size: clamp(16px, 1.6vw, 22px); max-width: 40ch; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); grid-auto-rows: 230px; gap: 14px; padding: 0 clamp(16px, 4vw, 64px) 64px; }
+  .tile { position: relative; border-radius: 14px; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line); cursor: pointer; padding: 0; color: inherit; font: inherit; text-align: left; }
+  .tile:focus-visible { outline: 3px solid var(--act); outline-offset: 3px; }
+  .tile.big { grid-column: span 2; grid-row: span 2; }
+  @media (max-width: 760px) { .tile.big { grid-column: auto; grid-row: auto; } }
+  .tile img, .tile video { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+  .tile:hover img, .tile:hover video { transform: scale(1.03); }
+  .tile .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 40px 16px 12px; font-size: 18px; font-weight: 650; background: linear-gradient(transparent, rgba(0,0,0,.75)); }
+  .tile .play { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; background: rgba(13,14,19,.7); display: grid; place-items: center; }
+  .tile .play svg { width: 16px; height: 16px; fill: var(--key); margin-left: 3px; }
+  .empty { margin: 0 clamp(16px, 4vw, 64px); border: 2px dashed var(--line); border-radius: 22px; padding: 60px 30px; text-align: center; color: var(--mute); font-size: 20px; line-height: 1.6; }
+  .empty code { font-family: 'JetBrains Mono', monospace; color: var(--act); }
+  .lb { position: fixed; inset: 0; background: rgba(5,6,9,.96); display: none; place-items: center; z-index: 10; }
+  .lb.show { display: grid; }
+  .lb .media { width: min(92vw, calc(84vh * 16 / 9)); aspect-ratio: 16 / 9; display: grid; place-items: center; }
+  .lb video, .lb img, .lb iframe { max-width: 100%; max-height: 84vh; width: 100%; height: 100%; object-fit: contain; border: 0; border-radius: 10px; background: #000; }
+  .lb .bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 18px 28px; display: flex; align-items: center; gap: 14px; }
+  .lb .title { flex: 1; font-size: 22px; font-weight: 650; }
+  .lb button { font: inherit; font-size: 18px; padding: 10px 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--ink-2); color: var(--text); cursor: pointer; }
+  .lb button:focus-visible { outline: 3px solid var(--act); }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Built at ZICA Pune</h1>
+    <p>Student films, game art, designs and experiments. Click any piece to play it full screen.</p>
+  </header>
+  <main id="grid" class="grid" aria-live="polite"></main>
+
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Player">
+    <div class="media" id="lbMedia"></div>
+    <div class="bar"><div class="title" id="lbTitle"></div><button id="lbPrev">Previous</button><button id="lbNext">Next</button><button id="lbClose">Close</button></div>
+  </div>
+
+<script src="assets/config.js"></script>
+<script src="assets/media.js"></script>
+<script>
+(function () {
+  var items = [], at = -1;
+  var grid = document.getElementById('grid'), lb = document.getElementById('lb'), lbMedia = document.getElementById('lbMedia');
+  var PLAY = '<span class="play"><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>';
+
+  window.DeckMedia.list('media/reel').then(function (list) {
+    items = list;
+    if (!items.length) {
+      grid.outerHTML = '<div class="empty">Nothing here yet. Upload files to <code>media/reel/</code> named <code>01-title.mp4</code>, <code>02-title.jpg</code>, and they arrange themselves in number order.<br>YouTube links go in <code>media/reel/youtube.txt</code>.</div>';
+      return;
+    }
+    grid.innerHTML = items.map(function (it, i) {
+      var inner = it.kind === 'video' ? '<video src="' + it.src + '#t=0.5" muted loop playsinline preload="metadata"></video>' + PLAY
+        : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" loading="lazy">' + PLAY
+        : '<img src="' + it.src + '" alt="" loading="lazy">';
+      return '<button class="tile' + (i === 0 ? ' big' : '') + '" data-i="' + i + '" aria-label="Open ' + (it.title || 'item ' + (i + 1)) + '">' + inner + (it.title ? '<span class="cap">' + it.title + '</span>' : '') + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(grid.querySelectorAll('.tile'), function (t) {
+      var v = t.querySelector('video');
+      if (v) { t.addEventListener('mouseenter', function () { v.play().catch(function () {}); }); t.addEventListener('mouseleave', function () { v.pause(); }); }
+      t.addEventListener('click', function () { open(+t.dataset.i); });
+    });
+  });
+
+  function open(i) {
+    at = (i + items.length) % items.length;
+    var it = items[at];
+    lbMedia.innerHTML = it.kind === 'video' ? '<video src="' + it.src + '" controls autoplay playsinline></video>'
+      : it.kind === 'youtube' ? '<iframe src="' + it.src + '?autoplay=1&rel=0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="' + (it.title || 'Video') + '"></iframe>'
+      : '<img src="' + it.src + '" alt="' + (it.title || '') + '">';
+    document.getElementById('lbTitle').textContent = it.title || '';
+    lb.classList.add('show');
+    document.getElementById('lbClose').focus();
+  }
+  function close() { lb.classList.remove('show'); lbMedia.innerHTML = ''; var t = grid.querySelector('[data-i="' + at + '"]'); if (t) t.focus(); }
+  document.getElementById('lbClose').onclick = close;
+  document.getElementById('lbNext').onclick = function () { open(at + 1); };
+  document.getElementById('lbPrev').onclick = function () { open(at - 1); };
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('show')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') open(at + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') open(at - 1);
+  });
+})();
+</script>
+</body>
+</html>

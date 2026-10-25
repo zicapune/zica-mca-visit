@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presenter view</title>
+<link rel="stylesheet" href="assets/fonts.css">
+<style>
+  :root { --ink:#0d0e13; --ink-2:#15171f; --line:#2b2f42; --text:#eceef4; --mute:#8d93a8; --key:#ffb547; --act:#5ce1e6; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--ink); color: var(--text); font-family: 'Bricolage Grotesque', system-ui, sans-serif; padding: 28px 34px; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; gap: 22px; }
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; }
+  .now { font-size: 40px; font-weight: 750; letter-spacing: -.02em; }
+  .pos { font-family: 'JetBrains Mono', monospace; color: var(--act); font-size: 20px; }
+  .clock { font-family: 'JetBrains Mono', monospace; font-size: 34px; color: var(--key); text-align: right; }
+  .clock small { display: block; font-size: 15px; color: var(--mute); }
+  .notes { font-size: 28px; line-height: 1.5; background: var(--ink-2); border: 1px solid var(--line); border-radius: 16px; padding: 28px 32px; overflow: auto; max-width: 70ch; }
+  footer { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .next { flex: 1; font-size: 20px; color: var(--mute); }
+  .next b { color: var(--text); font-weight: 650; }
+  button { font: inherit; font-size: 20px; padding: 12px 22px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-2); color: var(--text); cursor: pointer; }
+  button.primary { background: var(--key); color: var(--ink); border-color: var(--key); font-weight: 700; }
+  button:focus-visible { outline: 3px solid var(--act); outline-offset: 2px; }
+  select { font: inherit; font-size: 18px; padding: 10px; border-radius: 10px; background: var(--ink-2); color: var(--text); border: 1px solid var(--line); }
+  .wait { color: var(--mute); }
+</style>
+</head>
+<body>
+  <header>
+    <div><div class="now" id="now">Waiting for the deck…</div><div class="pos" id="pos"></div></div>
+    <div class="clock"><span id="elapsed">00:00</span><small>since start · <button id="reset" style="font-size:13px;padding:2px 8px">reset</button></small><div style="font-size:18px;color:var(--mute)" id="wall"></div></div>
+  </header>
+  <div class="notes" id="notes"><span class="wait">Open the deck in the other window. This window follows it.</span></div>
+  <footer>
+    <div class="next">Next: <b id="next">–</b></div>
+    <select id="jump" aria-label="Jump to slide"></select>
+    <button id="prev">Back</button>
+    <button id="fwd" class="primary">Next</button>
+  </footer>
+<script>
+(function () {
+  var bc = new BroadcastChannel('zica-deck');
+  var start = Date.now(), filled = false;
+  function send(cmd, n) { bc.postMessage({ type: 'cmd', cmd: cmd, n: n }); }
+  bc.onmessage = function (m) {
+    var d = m.data; if (!d || d.type !== 'state') return;
+    document.getElementById('now').textContent = d.title;
+    document.getElementById('pos').textContent = 'Slide ' + (d.cur + 1) + ' of ' + d.total + (d.maxStep ? '  ·  build ' + d.step + ' of ' + d.maxStep : '');
+    document.getElementById('notes').textContent = d.notes || '—';
+    document.getElementById('next').textContent = d.nextTitle;
+    var j = document.getElementById('jump');
+    if (!filled && d.titles) { j.innerHTML = d.titles.map(function (t, i) { return '<option value="' + i + '">' + (i + 1) + '. ' + t + '</option>'; }).join(''); filled = true; }
+    j.value = d.cur;
+  };
+  send('hello');
+  document.getElementById('fwd').onclick = function () { send('next'); };
+  document.getElementById('prev').onclick = function () { send('prev'); };
+  document.getElementById('jump').onchange = function (e) { send('goto', +e.target.value); };
+  document.getElementById('reset').onclick = function () { start = Date.now(); };
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'SELECT') return;
+    if (['ArrowRight', 'PageDown', ' '].indexOf(e.key) > -1) { e.preventDefault(); send('next'); }
+    if (['ArrowLeft', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); send('prev'); }
+  });
+  setInterval(function () {
+    var s = Math.floor((Date.now() - start) / 1000);
+    document.getElementById('elapsed').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    document.getElementById('wall').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }, 1000);
+})();
+</script>
+</body>
+</html>
