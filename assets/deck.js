@@ -453,11 +453,15 @@
           box.innerHTML = '<div class="qr-ph"><b>QR goes here</b><span>Paste the quest link into QUEST_URL in assets/config.js</span></div>';
           return;
         }
-        var s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
-        s.onload = function () { new window.QRCode(box, { text: CFG.QUEST_URL, width: 440, height: 440, colorDark: '#0d0e13', colorLight: '#eceef4', correctLevel: window.QRCode.CorrectLevel.M }); };
-        s.onerror = function () { box.innerHTML = '<div class="qr-ph"><b>' + CFG.QUEST_URL.replace(/^https?:\/\//, '') + '</b><span>QR library could not load. Share the link instead.</span></div>'; };
-        document.head.appendChild(s);
+        // self-hosted QR generator (assets/vendor/qrcode.js), so it works with no internet
+        try {
+          var qr = window.qrcode(0, 'M'); qr.addData(CFG.QUEST_URL); qr.make();
+          box.innerHTML = qr.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+          var svg = box.querySelector('svg'); svg.setAttribute('width', '100%'); svg.setAttribute('height', '100%');
+          svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'QR code for ' + CFG.QUEST_URL);
+        } catch (e) {
+          box.innerHTML = '<div class="qr-ph"><b>' + CFG.QUEST_URL.replace(/^https?:\/\//, '') + '</b><span>Share this link with the room.</span></div>';
+        }
       }
     };
   })();

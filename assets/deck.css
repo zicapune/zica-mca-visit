@@ -330,6 +330,8 @@ body.draft .slide.active .draft-tag ~ .slide-title-tag { display: none; }
 .quest { display: grid; grid-template-columns: 1fr 520px; gap: 100px; margin-top: 70px; align-items: center; }
 .qr-box { width: 520px; height: 520px; border-radius: 30px; background: var(--text); padding: 40px; position: relative; }
 .qr-box #qr { width: 100%; height: 100%; display: grid; place-items: center; }
+.qr-box #qr svg { display: block; width: 100%; height: 100%; }
+.qr-box #qr svg path, .qr-box #qr svg rect[fill='black'] { fill: #0d0e13; }
 .qr-box #qr img, .qr-box #qr canvas { width: 100% !important; height: 100% !important; image-rendering: pixelated; }
 .qr-ph { width: 100%; height: 100%; display: grid; place-content: center; text-align: center; color: var(--ink); gap: 10px; border: 3px dashed #b7bbca; border-radius: 16px; }
 .qr-ph b { font-size: 34px; letter-spacing: -.02em; }
