@@ -11,7 +11,7 @@ window.DECK_CONFIG = {
 
   /* Creative Quest link. Leave '' → the last slide shows a QR placeholder.
      Paste the live URL here → a real QR code appears automatically. */
-  QUEST_URL: '',
+  QUEST_URL: 'https://zicapune.github.io/creative-quest/?src=mca_visit_qr',
 
   /* true → small amber "draft" tag on the course slides until the software
      lists below are confirmed. Set to false before you present. */
