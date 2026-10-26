@@ -13,34 +13,40 @@ window.DECK_CONFIG = {
      Paste the live URL here → a real QR code appears automatically. */
   QUEST_URL: 'https://zicapune.github.io/creative-quest/?src=mca_visit_qr',
 
-  /* true → small amber "draft" tag on the course slides until the software
-     lists below are confirmed. Set to false before you present. */
-  CURRICULUM_DRAFT: true,
+  /* true → small amber "draft" tag on the course slides. Off: lists below come
+     from the ZICA Curriculum 2026–27 workbook. */
+  CURRICULUM_DRAFT: false,
 
   /* Courses, longest first (that's the "plans" order on the comparison slide).
+     Source: ZICA Curriculum 2026–27 (tabs PPAGAD, PPVFX, Prog in ADV MG, Prog in UI & UX).
      Every software name used below becomes a row; ✓ if the course has it, ✕ if not. */
   SOFTWARE_ORDER: [
-    'Photoshop', 'Illustrator', 'Figma', 'After Effects', 'Premiere Pro',
-    'Blender', 'Maya', 'ZBrush', 'Substance Painter', 'Unreal Engine 5', 'Nuke', 'Houdini'
+    'Photoshop', 'Illustrator', 'Adobe XD', 'Figma', 'Notion',
+    'Premiere Pro & Audition', 'After Effects', 'Element 3D',
+    'Maya', 'Blender', 'Mixamo', 'Unreal Engine + Blueprints',
+    'Nuke', 'SilhouetteFX', '3DEqualizer'
   ],
   COURSES: [
-    { name: 'Game Art & Design', months: 12, tagline: 'Build worlds people play in',
-      software: ['Photoshop', 'Illustrator', 'Blender', 'Maya', 'ZBrush', 'Substance Painter', 'Unreal Engine 5'] },
-    { name: 'VFX', months: 12, tagline: 'Make the impossible look filmed',
-      software: ['Photoshop', 'After Effects', 'Premiere Pro', 'Maya', 'Blender', 'Nuke', 'Houdini'] },
-    { name: 'Motion Graphics', months: 6, tagline: 'Ads, reels, titles, explainers',
-      software: ['Photoshop', 'Illustrator', 'After Effects', 'Premiere Pro', 'Blender'] },
-    { name: 'UI/UX Design', months: 4, tagline: 'Fastest route to freelancing', highlight: true,
-      software: ['Photoshop', 'Illustrator', 'Figma'] }
+    { name: 'Game Art & Design', tier: 'Professional Program', months: 12, tagline: 'Build worlds people play in',
+      software: ['Photoshop', 'Illustrator', 'After Effects', 'Blender', 'Mixamo', 'Unreal Engine + Blueprints'] },
+    { name: 'Visual Effects', tier: 'Professional Program', months: 12, tagline: 'Make the impossible look filmed',
+      software: ['Photoshop', 'Premiere Pro & Audition', 'Maya', 'After Effects', 'Nuke', 'SilhouetteFX', '3DEqualizer'] },
+    { name: 'Adv. Motion Graphics', tier: 'Program', months: 6, tagline: 'Ads, reels, titles, explainers',
+      software: ['Photoshop', 'Illustrator', 'Premiere Pro & Audition', 'After Effects', 'Element 3D'] },
+    { name: 'UI & UX', tier: 'Program', months: 6, tagline: 'Fastest route to freelancing', highlight: true,
+      software: ['Photoshop', 'Adobe XD', 'Notion', 'Figma'] }
   ],
 
-  /* UI/UX spotlight slide: what students walk out with. */
+  /* UI/UX spotlight: the 12-month Professional Program adds these on top of the 6-month tools. */
+  UIUX_UPGRADE: { months: 12, adds: ['Illustrator', 'Miro', 'FigJam', 'Framer'] },
+
+  /* UI/UX spotlight slide: what students walk out with (from the 6-month syllabus). */
   UIUX_SHIPS: [
-    'A full app redesign case study',
-    'A responsive landing page, designed and handed off',
-    'A clickable Figma prototype',
-    'A reusable design system',
-    'A portfolio that gets the first client'
+    'UX laws and heuristics, applied to real apps',
+    'A clickable mobile app prototype in Adobe XD',
+    'UX research documented in Notion',
+    'A Figma design system with components and variables',
+    'Micro-interactions, design specs and developer handoff'
   ],
 
   /* Side-hustle calculator defaults (₹/hr range from the Xflow 2026 rate card). */

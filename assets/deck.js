@@ -364,6 +364,7 @@
         (CFG.COURSES || []).forEach(function (c, i) {
           html += '<div class="plan' + (c.highlight ? ' hi' : '') + '"' + (i ? ' data-step="' + i + '"' : '') + '>' +
             (c.highlight ? '<div class="pill">Best for MCA</div>' : '') +
+            (c.tier ? '<div class="tier">' + c.tier + ' in</div>' : '') +
             '<div class="pn">' + c.name + '</div>' +
             '<div class="dur"><b>' + c.months + '</b><span>months</span></div>' +
             '<div class="tg">' + (c.tagline || '') + '</div><ul>';
@@ -387,6 +388,8 @@
         if (built) return; built = true;
         var c = (CFG.COURSES || []).filter(function (x) { return x.highlight; })[0];
         if (c) $('#uiuxTools').innerHTML = c.software.map(function (s) { return '<span class="tool">' + s + '</span>'; }).join('');
+        var up = CFG.UIUX_UPGRADE;
+        if (up && up.adds && up.adds.length) $('#uiuxUp').innerHTML = '<span class="up-l">The ' + up.months + '-month Professional Program adds</span>' + up.adds.map(function (s) { return '<span class="tool up">' + s + '</span>'; }).join('');
         $('#ships').innerHTML = (CFG.UIUX_SHIPS || []).map(function (s, i) { return '<li style="--i:' + i + '">' + ICON_Y + s + '</li>'; }).join('');
         render();
       }
