@@ -13,11 +13,16 @@ window.DECK_CONFIG = {
      Paste the live URL here → a real QR code appears automatically. */
   QUEST_URL: 'https://zicapune.github.io/creative-quest/?src=mca_visit_qr',
 
+  /* Studio-visits slide: stays hidden until its photos/videos are uploaded to media/visits/… */
+  SHOW_VISITS: false,
+
   /* true → small amber "draft" tag on the course slides. Off: lists below come
      from the ZICA Curriculum 2026–27 workbook. */
   CURRICULUM_DRAFT: false,
 
   /* Courses, longest first (that's the "plans" order on the comparison slide).
+     Badge on top of each card: highlight:true → "Highly recommended", others → "Recommended".
+     Add badge: '…' to any course to override its wording.
      Source: ZICA Curriculum 2026–27 (tabs PPAGAD, PPVFX, Prog in ADV MG, Prog in UI & UX).
      Every software name used below becomes a row; ✓ if the course has it, ✕ if not. */
   SOFTWARE_ORDER: [

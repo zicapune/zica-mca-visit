@@ -5,6 +5,10 @@
   'use strict';
   var CFG = window.DECK_CONFIG || {};
   var stage = document.getElementById('stage');
+  // slides switched off in config.js (e.g. data-show-if="SHOW_VISITS") are removed before anything counts them
+  Array.prototype.slice.call(document.querySelectorAll('.slide[data-show-if]')).forEach(function (el) {
+    if (!(window.DECK_CONFIG || {})[el.getAttribute('data-show-if')]) el.parentNode.removeChild(el);
+  });
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
   var N = slides.length;
   var cur = 0, step = 0, entered = -1;
@@ -182,6 +186,7 @@
   var hooks = {};
   function onEnter(i) {
     var s = slides[i];
+    clearInterval(ambTimer);
     $$('[data-count]', s).forEach(countUp);
     var h = hooks[s.dataset.hook];
     if (h && h.enter) h.enter(s);
@@ -363,7 +368,7 @@
         var html = '';
         (CFG.COURSES || []).forEach(function (c, i) {
           html += '<div class="plan' + (c.highlight ? ' hi' : '') + '"' + (i ? ' data-step="' + i + '"' : '') + '>' +
-            (c.highlight ? '<div class="pill">Best for MCA</div>' : '') +
+            '<div class="pill' + (c.highlight ? '' : ' soft') + '">' + (c.badge || (c.highlight ? 'Highly recommended' : 'Recommended')) + '</div>' +
             (c.tier ? '<div class="tier">' + c.tier + ' in</div>' : '') +
             '<div class="pn">' + c.name + '</div>' +
             '<div class="dur"><b>' + c.months + '</b><span>months</span></div>' +
@@ -425,7 +430,8 @@
   hooks.wall = (function () {
     var loaded = false;
     return {
-      enter: function () {
+      enter: function (sl) {
+        ambient(sl);
         if (loaded || !window.DeckMedia) return; loaded = true;
         var el = $('#wall');
         window.DeckMedia.list('media/reel').then(function (items) {
@@ -465,6 +471,151 @@
         } catch (e) {
           box.innerHTML = '<div class="qr-ph"><b>' + CFG.QUEST_URL.replace(/^https?:\/\//, '') + '</b><span>Share this link with the room.</span></div>';
         }
+      }
+    };
+  })();
+
+  /* ---- ambient glow: a slide takes on the colour of the media playing in it ---- */
+  var ambCanvas = document.createElement('canvas'); ambCanvas.width = ambCanvas.height = 12;
+  function sampleColour(el) {
+    try {
+      var x = ambCanvas.getContext('2d', { willReadFrequently: true });
+      x.drawImage(el, 0, 0, 12, 12);
+      var d = x.getImageData(0, 0, 12, 12).data, r = 0, g = 0, b = 0, n = 0;
+      for (var i = 0; i < d.length; i += 4) {
+        var mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+        var w = 0.2 + (mx - mn) / 255;             // favour saturated pixels so the glow has colour
+        if (mx < 30) continue;
+        r += d[i] * w; g += d[i + 1] * w; b += d[i + 2] * w; n += w;
+      }
+      return n ? [r / n, g / n, b / n].map(Math.round) : null;
+    } catch (e) { return null; }                    // e.g. a YouTube thumbnail (cross-origin)
+  }
+  var ambTimer = 0;
+  function ambient(slide) {
+    clearInterval(ambTimer);
+    if (!slide) return;
+    function tick() {
+      var cols = $$('img, video', slide).filter(function (m) { return (m.complete || m.readyState >= 2) && m.offsetParent; }).map(sampleColour).filter(Boolean);
+      if (!cols.length) return;
+      var c = [0, 0, 0]; cols.forEach(function (k) { c[0] += k[0]; c[1] += k[1]; c[2] += k[2]; });
+      slide.style.setProperty('--amb', c.map(function (v) { return Math.round(v / cols.length); }).join(' '));
+      slide.classList.add('ambient');
+    }
+    tick(); ambTimer = setInterval(tick, 1200);
+  }
+
+  /* ---- studio visits: each tile cross-fades through its folder ---- */
+  hooks.visits = (function () {
+    var loaded = false, timers = [];
+    return {
+      enter: function (s) {
+        ambient(s);
+        if (loaded || !window.DeckMedia) return; loaded = true;
+        $$('.vtile', s).forEach(function (tile, ti) {
+          window.DeckMedia.list(tile.getAttribute('data-folder')).then(function (items) {
+            var box = tile.querySelector('.vmedia');
+            items = items.filter(function (it) { return it.kind !== 'youtube'; });
+            if (!items.length) { tile.classList.add('empty'); return; }
+            box.innerHTML = items.map(function (it, i) {
+              return it.kind === 'video'
+                ? '<video class="vm' + (i ? '' : ' on') + '" src="' + it.src + '" muted loop playsinline preload="' + (i ? 'none' : 'auto') + '" data-autoplay="1"></video>'
+                : '<img class="vm' + (i ? '' : ' on') + '" src="' + it.src + '" alt="" decoding="async"' + (i ? ' loading="lazy"' : '') + '>';
+            }).join('');
+            syncVideos();
+            if (items.length > 1) {
+              var k = 0, els = $$('.vm', box);
+              timers.push(setInterval(function () {
+                els[k].classList.remove('on'); k = (k + 1) % els.length; els[k].classList.add('on');
+                if (els[k].tagName === 'VIDEO') { els[k].preload = 'auto'; var pr = els[k].play(); if (pr && pr.catch) pr.catch(function () {}); }
+              }, 3800 + ti * 450));
+            }
+          });
+        });
+      },
+    };
+  })();
+
+  /* ---- 7 · the designed login types, signs in and loops (subtle) ---- */
+  hooks.ux = (function () {
+    var t = [], on = false;
+    function q(id) { return document.getElementById(id); }
+    function later(fn, ms) { t.push(setTimeout(fn, ms)); }
+    function reset() {
+      q('pxEmail').textContent = ''; q('pxPass').textContent = '';
+      ['pxF1', 'pxF2'].forEach(function (id) { q(id).classList.remove('on', 'filled'); });
+      q('pxCta').className = 'cta';
+    }
+    function run() {
+      if (!on) return;
+      reset();
+      var email = 'aarav@ibmr.in', at = 700;
+      later(function () { q('pxF1').classList.add('on'); }, at);
+      for (var i = 1; i <= email.length; i++) (function (k) { later(function () { q('pxEmail').textContent = email.slice(0, k); }, at + 300 + k * 85); })(i);
+      at += 300 + email.length * 85 + 500;
+      later(function () { q('pxF1').classList.remove('on'); q('pxF1').classList.add('filled'); q('pxF2').classList.add('on'); }, at);
+      for (var j = 1; j <= 10; j++) (function (k) { later(function () { q('pxPass').textContent = new Array(k + 1).join('•'); }, at + 250 + k * 70); })(j);
+      at += 250 + 10 * 70 + 500;
+      later(function () { q('pxF2').classList.remove('on'); q('pxF2').classList.add('filled'); q('pxCta').classList.add('press'); }, at);
+      later(function () { q('pxCta').classList.remove('press'); q('pxCta').classList.add('load'); }, at + 180);
+      later(function () { q('pxCta').classList.remove('load'); q('pxCta').classList.add('done'); }, at + 1300);
+      later(run, at + 4200);
+    }
+    return {
+      step: function (s, st) {
+        if (st >= 1 && !on) { on = true; if (reduce) { q('pxEmail').textContent = 'aarav@ibmr.in'; q('pxPass').textContent = '••••••••••'; q('pxF1').classList.add('filled'); q('pxF2').classList.add('filled'); } else run(); }
+        if (st < 1) { on = false; t.forEach(clearTimeout); t = []; reset(); }
+      },
+      leave: function () { on = false; t.forEach(clearTimeout); t = []; }
+    };
+  })();
+
+  /* ---- Team slides: portraits "render" in; photo optional, initials fallback ---- */
+  hooks.team = (function () {
+    function initials(name) {
+      var w = name.replace(/\[|\]/g, '').trim().split(/\s+/).filter(Boolean);
+      return ((w[0] || '?')[0] + (w.length > 1 ? w[w.length - 1][0] : '')).toUpperCase();
+    }
+    function glowFrom(img, el) {
+      try {
+        var c = document.createElement('canvas'); c.width = c.height = 16;
+        var x = c.getContext('2d'); x.drawImage(img, 0, 0, 16, 16);
+        var d = x.getImageData(0, 0, 16, 16).data, r = 0, g = 0, b = 0, n = 0;
+        for (var i = 0; i < d.length; i += 4) { var m = Math.max(d[i], d[i + 1], d[i + 2]); if (m < 40) continue; r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+        if (n) el.style.setProperty('--glow', Math.round(r / n) + ' ' + Math.round(g / n) + ' ' + Math.round(b / n));
+      } catch (e) {}
+    }
+    $$('.slide.team').forEach(function (sl) {
+      var people = $$('.person', sl), draft = false;
+      var row = sl.querySelector('.team-row');
+      people.forEach(function (p, i) {
+        var top = p.classList.contains('top'), inRow = row && row.contains(p);
+        var d = sl.querySelector('.team-duo') ? 0.2 + i * 0.6 : top ? 0.1 : 1.7 + (people.indexOf(p) - 1) * 0.3;
+        p.style.setProperty('--d', d + 's');
+        var name = (p.querySelector('.pname') || {}).textContent || '';
+        if (/\[.*\]/.test(name)) draft = true;
+        var ph = p.querySelector('.ph');
+        ph.innerHTML = '<div class="frame"><div class="mono">' + initials(name) + '</div><div class="img"></div></div>' +
+          '<div class="scan"></div><svg class="wire" viewBox="0 0 100 125" preserveAspectRatio="none"><rect x="0.5" y="0.5" width="99" height="124" rx="13" pathLength="1"/></svg>' +
+          '<div class="hud">rendering</div>';
+        var src = p.getAttribute('data-photo');
+        if (src) {
+          var im = new Image();
+          im.onload = function () { var el = ph.querySelector('.img'); el.style.backgroundImage = 'url("' + src + '")'; ph.querySelector('.mono').style.display = 'none'; glowFrom(im, ph); };
+          im.src = src;
+        }
+      });
+      var tag = sl.querySelector('.team-draft'); if (tag) tag.classList.toggle('show', draft);
+    });
+    var timers = [];
+    return {
+      enter: function (s) {
+        timers.forEach(clearTimeout); timers = [];
+        $$('.person', s).forEach(function (p) {
+          p.classList.remove('done');
+          var d = parseFloat(p.style.getPropertyValue('--d')) || 0;
+          timers.push(setTimeout(function () { p.classList.add('done'); }, (d + 1.7) * 1000));
+        });
       }
     };
   })();
