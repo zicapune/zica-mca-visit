@@ -50,6 +50,24 @@ window.DECK_CONFIG = {
       software: ['Photoshop', 'Adobe XD', 'Notion', 'Figma'] }
   ],
 
+  /* ASM IBMR hybrid offer — hidden view on the "Pick a path" slide.
+     O (or click the small "Pick a path" tag) opens it · → rolls the months to the hybrid plan · → again = next slide
+     R (or click "Minimum batch") shows/hides prices · ← / Esc closes.
+     from = standard months, to = hybrid months (from Shikha ma'am's offer sheet). Prices in ₹. */
+  ASM_OFFER: {
+    kicker: 'Hybrid learning · what we recommend for ASM IBMR',
+    title: 'Learn at your campus. And online.',
+    schedule: '2 hours a day · 5 days a week',
+    mode: '2 days on your campus · 3 days live online',
+    minBatch: 5,
+    rows: [
+      { tier: 'Professional Program', name: 'Game Art & Design',          from: 12, to: 7, mrp: 170000, offer: 120000 },
+      { tier: 'Professional Program', name: 'UI & UX',                    from: 12, to: 7, mrp: 150000, offer: 100000, highlight: true },
+      { tier: 'Professional Program', name: 'Digital Design & Marketing', from: 12, to: 8, mrp: 150000, offer: 100000 },
+      { tier: 'Program',              name: 'UI & UX',                    from: 6,  to: 9, mrp: 65000,  offer: 45000,  highlight: true }
+    ]
+  },
+
   /* UI/UX spotlight: the 12-month Professional Program adds these on top of the 6-month tools. */
   UIUX_UPGRADE: { months: 12, adds: ['Illustrator', 'Miro', 'FigJam', 'Framer'] },
 

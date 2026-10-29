@@ -80,11 +80,14 @@
     broadcast();
   }
 
+  function hookNav(d) { var h = hooks[slides[cur].dataset.hook]; return !!(h && h.nav && h.nav(d)); }
   function next() {
+    if (hookNav(1)) return;
     if (step < maxStep(cur)) { step++; render(); }
     else if (cur < N - 1) { cur++; step = 0; render(); }
   }
   function prev() {
+    if (hookNav(-1)) return;
     if (step > 0) { step--; render(); }
     else if (cur > 0) { cur--; step = maxStep(cur); render(); }
   }
@@ -100,6 +103,8 @@
     if (t && t.tagName === 'INPUT' && t.type !== 'range') return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var k = e.key;
+    var hk = hooks[slides[cur].dataset.hook];
+    if (hk && hk.key && hk.key(k)) { e.preventDefault(); return; }
     if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'ArrowDown' || (k === 'Enter' && !numBuf)) { e.preventDefault(); next(); }
     else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'ArrowUp' || k === 'Backspace') { e.preventDefault(); prev(); }
     else if (k === 'Home') go(0);
@@ -388,9 +393,68 @@
         PB.mode(st);
         $$('#plans .plan').forEach(function (p, i) { p.classList.toggle('focus', i === st); });
       },
-      leave: function () { PB.stop(); }
+      leave: function () { PB.stop(); offerClose(); },
+      nav: function (d) {
+        if (!OF.open) return false;
+        if (d > 0) {
+          if (!OF.hyb) { offerHybrid(true); return true; }
+          offerClose(); cur = Math.min(N - 1, cur + 1); step = 0; render(); return true;   // straight to the next slide
+        }
+        if (OF.hyb) { offerHybrid(false); return true; }
+        offerClose(); return true;
+      },
+      key: function (k) {
+        if (k === 'o' || k === 'O') { OF.open ? offerClose() : offerOpen(); return true; }
+        if (!OF.open) return false;
+        if (k === 'r' || k === 'R') { offerMoney(); return true; }
+        if (k === 'Escape') { offerClose(); return true; }
+        return false;
+      }
     };
   })();
+
+  /* ASM hybrid offer: hidden view on "Pick a path" (O to open, → hybrid months, → next slide, R prices) */
+  var OF = { open: false, hyb: false, built: false };
+  function inr(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+  function offerBuild() {
+    var o = CFG.ASM_OFFER, el = $('#offer');
+    if (!o || !el) return null;
+    if (OF.built) return el;
+    var CAL = '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+    var MAP = '<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>';
+    var h = '<div class="o-kick">' + o.kicker + '</div><div class="o-title">' + o.title + '</div><div class="o-cards">';
+    o.rows.forEach(function (r, i) {
+      h += '<div class="o-card' + (r.highlight ? ' hi' : '') + '" style="--i:' + i + '">' +
+        '<div class="o-pill">' + (r.highlight ? 'Highly recommended' : 'Recommended') + '</div>' +
+        '<div class="o-tier">' + r.tier + ' in</div><div class="o-name">' + r.name + '</div>' +
+        '<div class="o-dur"><b data-from="' + r.from + '" data-to="' + r.to + '">' + r.from + '</b><span>months</span></div>' +
+        '<div class="o-was">usually <s>' + r.from + ' months</s></div>' +
+        '<div class="o-price"><s>' + inr(r.mrp) + '</s><b>' + inr(r.offer) + '</b><i>You save ' + inr(r.mrp - r.offer) + '</i></div></div>';
+    });
+    h += '</div><div class="o-band"><div>' + CAL + o.schedule + '</div><div>' + MAP + o.mode + '</div><div class="o-batch" id="oBatch">Minimum batch: ' + o.minBatch + ' students</div></div>';
+    el.innerHTML = h; OF.built = true;
+    $('#oBatch').addEventListener('click', function (e) { e.stopPropagation(); offerMoney(); });
+    return el;
+  }
+  function rollMonths(to) {
+    $$('#offer .o-dur b').forEach(function (b) {
+      var a = +b.textContent, z = +b.getAttribute(to ? 'data-to' : 'data-from'), t0 = performance.now(), dur = reduce ? 1 : 900;
+      (function tick(t) { var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); b.textContent = Math.round(a + (z - a) * e); if (k < 1) requestAnimationFrame(tick); })(t0);
+    });
+  }
+  function offerOpen() {
+    var el = offerBuild(); if (!el) return;
+    OF.open = true; OF.hyb = false; el.classList.remove('hyb', 'money');
+    $$('#offer .o-dur b').forEach(function (b) { b.textContent = b.getAttribute('data-from'); });
+    el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); el.parentNode.classList.add('offer-on');
+  }
+  function offerHybrid(on) { OF.hyb = on; $('#offer').classList.toggle('hyb', on); rollMonths(on); }
+  function offerMoney() { if (OF.open) $('#offer').classList.toggle('money'); }
+  function offerClose() {
+    var el = $('#offer'); if (!el) return;
+    OF.open = false; OF.hyb = false; el.classList.remove('open', 'hyb', 'money'); el.setAttribute('aria-hidden', 'true'); el.parentNode.classList.remove('offer-on');
+  }
+  (function () { var hot = $('#offerHot'); if (hot) hot.addEventListener('click', function () { OF.open ? offerClose() : offerOpen(); }); })();
   hooks.plans.enter = (function (orig) { return function (sl) { orig(sl); PB.start(sl.querySelector('#plansBg')); }; })(hooks.plans.enter);
 
   /* Pick-a-path backgrounds: 0 game world · 1 VFX sparks · 2 motion shapes · 3 UI wireframes */
@@ -734,8 +798,8 @@
     var cv, c, raf = 0, P = null, T = null;
     var STAGES = [
       { r: [190, 190, 150], o: [[-230, -110], [230, -110], [0, 230]], you: 0.0 },
-      { r: [300, 190, 150], o: [[-150, -80], [210, -100], [0, 220]], you: 0.4 },
-      { r: [300, 300, 160], o: [[-120, -60], [120, -60], [0, 200]], you: 0.75 },
+      { r: [300, 190, 150], o: [[-170, -70], [250, -110], [10, 260]], you: 0.2 },
+      { r: [300, 300, 170], o: [[-130, -60], [140, -60], [0, 230]], you: 0.6 },
       { r: [310, 310, 290], o: [[-110, -50], [110, -50], [0, 130]], you: 1.0 }
     ];
     var COL = [[92, 225, 230], [255, 122, 26], [255, 181, 71]], NAME = ['Code', 'Design', 'AI'];
@@ -744,28 +808,79 @@
         o: a.o.map(function (p, i) { return [p[0] + (b.o[i][0] - p[0]) * t, p[1] + (b.o[i][1] - p[1]) * t]; }),
         you: a.you + (b.you - a.you) * t };
     }
+    var PAIR = [[0, 1, 'Design engineer'], [0, 2, 'AI developer'], [1, 2, 'AI artist']];
+    function inC(k, x, y) { var dx = x - k[0], dy = y - k[1]; return dx * dx + dy * dy <= k[2] * k[2]; }
+    function regions(circ, W, H) {
+      // sample a grid once per frame: triple overlap + each pair-only lens (area + centroid)
+      var g = 10, R = { t: [0, 0, 0], p: [[0, 0, 0], [0, 0, 0], [0, 0, 0]] };
+      var x0 = Math.max(0, Math.min(circ[0][0] - circ[0][2], circ[1][0] - circ[1][2], circ[2][0] - circ[2][2])), x1 = Math.min(W, Math.max(circ[0][0] + circ[0][2], circ[1][0] + circ[1][2], circ[2][0] + circ[2][2]));
+      var y0 = Math.max(0, Math.min(circ[0][1] - circ[0][2], circ[1][1] - circ[1][2], circ[2][1] - circ[2][2])), y1 = Math.min(H, Math.max(circ[0][1] + circ[0][2], circ[1][1] + circ[1][2], circ[2][1] + circ[2][2]));
+      for (var y = y0; y < y1; y += g) for (var x = x0; x < x1; x += g) {
+        var a = inC(circ[0], x, y), b = inC(circ[1], x, y), c3 = inC(circ[2], x, y);
+        if (a && b && c3) { R.t[0]++; R.t[1] += x; R.t[2] += y; }
+        else if (a && b) { R.p[0][0]++; R.p[0][1] += x; R.p[0][2] += y; }
+        else if (a && c3) { R.p[1][0]++; R.p[1][1] += x; R.p[1][2] += y; }
+        else if (b && c3) { R.p[2][0]++; R.p[2][1] += x; R.p[2][2] += y; }
+      }
+      return R;
+    }
     function draw(S, time) {
       var W = cv.width, H = cv.height, cx0 = W / 2, cy0 = H / 2 - 40;
       c.clearRect(0, 0, W, H);
-      var circ = S.r.map(function (r, i) { var wob = reduce ? 0 : Math.sin(time * .8 + i * 2) * 4; return [cx0 + S.o[i][0], cy0 + S.o[i][1] + wob, r]; });
+      var K = 1.32; var circ = S.r.map(function (r, i) { var wob = reduce ? 0 : Math.sin(time * .8 + i * 2) * 5; return [cx0 + S.o[i][0] * K, cy0 + S.o[i][1] * K + wob, r * K]; });
+      // soft glow behind everything once "You" exists
+      if (S.you > .05) {
+        var gx = (circ[0][0] + circ[1][0] + circ[2][0]) / 3, gy = (circ[0][1] + circ[1][1] + circ[2][1]) / 3;
+        var gl = c.createRadialGradient(gx, gy, 0, gx, gy, 520);
+        gl.addColorStop(0, 'rgba(255,181,71,' + (0.16 * S.you * (0.85 + 0.15 * Math.sin(time * 2))) + ')'); gl.addColorStop(1, 'rgba(255,181,71,0)');
+        c.fillStyle = gl; c.fillRect(0, 0, W, H);
+      }
       circ.forEach(function (k, i) {
-        c.beginPath(); c.arc(k[0], k[1], k[2], 0, 7);
-        c.fillStyle = 'rgba(' + COL[i] + ',.13)'; c.fill();
+        var rg = c.createRadialGradient(k[0] - k[2] * .3, k[1] - k[2] * .3, k[2] * .1, k[0], k[1], k[2]);
+        rg.addColorStop(0, 'rgba(' + COL[i] + ',.22)'); rg.addColorStop(1, 'rgba(' + COL[i] + ',.07)');
+        c.beginPath(); c.arc(k[0], k[1], k[2], 0, 7); c.fillStyle = rg; c.fill();
         c.lineWidth = 3; c.strokeStyle = 'rgba(' + COL[i] + ',.9)'; c.stroke();
       });
-      // triple overlap, filled amber
-      c.save();
-      circ.forEach(function (k) { c.beginPath(); c.arc(k[0], k[1], k[2], 0, 7); c.clip(); });
-      c.fillStyle = 'rgba(255,181,71,' + (0.25 + 0.6 * S.you) + ')'; c.fillRect(0, 0, W, H);
-      c.restore();
-      c.font = '700 46px "Bricolage Grotesque", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+      var R = regions(circ, W, H), cell = 100;           // each sample = 10×10 px
+      // pair-only lenses: faint tint now, role label after "You"
+      PAIR.forEach(function (pr, j) {
+        if (R.p[j][0] * cell < 9000) return;
+        c.save(); c.beginPath(); c.arc(circ[pr[0]][0], circ[pr[0]][1], circ[pr[0]][2], 0, 7); c.clip();
+        c.beginPath(); c.arc(circ[pr[1]][0], circ[pr[1]][1], circ[pr[1]][2], 0, 7); c.clip();
+        c.fillStyle = 'rgba(255,255,255,.05)'; c.fillRect(0, 0, W, H); c.restore();
+      });
+      // triple overlap = "You"
+      var tn = R.t[0], area = tn * cell;
+      if (area > 600) {
+        c.save();
+        circ.forEach(function (k) { c.beginPath(); c.arc(k[0], k[1], k[2], 0, 7); c.clip(); });
+        var tx = R.t[1] / tn, ty = R.t[2] / tn, tr = Math.sqrt(area / Math.PI);
+        var yg = c.createRadialGradient(tx, ty, 0, tx, ty, tr * 1.6);
+        yg.addColorStop(0, 'rgba(255,205,120,' + (0.55 + 0.4 * S.you) + ')'); yg.addColorStop(1, 'rgba(255,170,50,' + (0.35 + 0.5 * S.you) + ')');
+        c.fillStyle = yg; c.fillRect(0, 0, W, H);
+        // sparkles drifting inside the zone on the last stage
+        if (S.you > .8 && !reduce) for (var q = 0; q < 14; q++) {
+          var ang = q * 2.4 + time * .35, rr = tr * (0.25 + 0.6 * ((q * 37 % 10) / 10));
+          c.fillStyle = 'rgba(255,255,255,' + (0.25 + 0.25 * Math.sin(time * 3 + q)) + ')';
+          c.beginPath(); c.arc(tx + Math.cos(ang) * rr, ty + Math.sin(ang) * rr, 2.5, 0, 7); c.fill();
+        }
+        c.restore();
+        c.lineWidth = 2; c.strokeStyle = 'rgba(255,220,160,' + (0.3 + 0.5 * S.you) + ')';
+        var fs = Math.max(30, Math.min(120, tr * 0.62));
+        c.font = '800 ' + Math.round(fs) + 'px "Bricolage Grotesque", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillStyle = 'rgba(13,14,19,' + Math.min(1, area / 9000) + ')';
+        c.fillText('You', tx, ty);
+      }
+      PAIR.forEach(function (pr, j) {
+        var n = R.p[j][0]; if (n * cell < 22000) return;
+        var al = Math.min(1, (n * cell - 22000) / 20000);
+        c.font = '600 34px "Bricolage Grotesque", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.fillStyle = 'rgba(236,238,244,' + (0.8 * al) + ')';
+        c.fillText(pr[2], R.p[j][1] / n, R.p[j][2] / n);
+      });
+      c.font = '700 58px "Bricolage Grotesque", sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle';
       var lab = [[-1, -1], [1, -1], [0, 1]];
-      circ.forEach(function (k, i) { c.fillStyle = 'rgba(' + COL[i] + ',1)'; c.fillText(NAME[i], k[0] + lab[i][0] * k[2] * .5, k[1] + lab[i][1] * k[2] * .55); });
-      // "You" in the centre of the triple overlap
-      var yx = (circ[0][0] + circ[1][0] + circ[2][0]) / 3, yy = (circ[0][1] + circ[1][1] + circ[2][1]) / 3;
-      var sc = 0.6 + S.you * 1.1;
-      c.font = '800 ' + Math.round(44 * sc) + 'px "Bricolage Grotesque", sans-serif';
-      c.fillStyle = '#0d0e13'; c.fillText('You', yx, yy);
+      circ.forEach(function (k, i) { c.fillStyle = 'rgba(' + COL[i] + ',1)'; c.fillText(NAME[i], k[0] + lab[i][0] * k[2] * .5, k[1] + lab[i][1] * k[2] * .62); });
     }
     function frame(t) {
       if (T) { var k = Math.min(1, (t - T.t0) / 1100); var e = 1 - Math.pow(1 - k, 3); P = lerpS(T.from, T.to, e); if (k >= 1) T = null; }
@@ -807,7 +922,7 @@
   /* ---- Career growth: India salary by experience, then the abroad column ---- */
   hooks.growth = (function () {
     var built = false;
-    var X = [0, 5, 10], XL = ['Start', '5 years', '10 years'];
+    var X = [0, 5, 10], XL = ['First job', 'After 5 years', 'After 10 years'];
     var SERIES = [
       { name: '3D & game art', col: '#5ce1e6', v: [3.2, 6.2, 8.1], note: '7 yrs' },
       { name: 'VFX', col: '#8d93a8', v: [2.9, 4.5, 6.8], note: '8 yrs' },
@@ -815,12 +930,12 @@
       { name: 'UI/UX', col: '#ffb547', v: [4.6, 11.5, 17.4], hi: true }
     ];
     function build(svg) {
-      var L = 90, R = 1180, T = 30, B = 560, MAX = 20;
+      var L = 90, R = 1180, T = 70, B = 560, MAX = 20;
       function px(i) { return L + (R - L) * X[i] / 10; }
       function py(v) { return B - (B - T) * v / MAX; }
       var h = '<g class="grid">';
       [0, 5, 10, 15, 20].forEach(function (v) { h += '<line x1="' + L + '" x2="' + R + '" y1="' + py(v) + '" y2="' + py(v) + '"/><text x="' + (L - 16) + '" y="' + (py(v) + 7) + '" text-anchor="end">₹' + v + 'L</text>'; });
-      h += '</g>';
+      h += '</g><text class="axcap" x="' + (L - 16) + '" y="24">Yearly salary in India, ₹ lakh per year</text>';
       XL.forEach(function (t, i) { h += '<text class="xl" x="' + px(i) + '" y="' + (B + 40) + '" text-anchor="middle">' + t + '</text>'; });
       // end-label positions, pushed apart so they never overlap
       var ly = SERIES.map(function (S, k) { return { k: k, y: py(S.v[2]) }; }).sort(function (a, b) { return a.y - b.y; });
@@ -834,12 +949,15 @@
         });
         var last = S.v[2];
         h += '<g style="opacity:0;transition:opacity .5s ' + (1.4 + k * 0.45) + 's" class="endlab"><text class="lab" x="' + (R + 22) + '" y="' + (LY[k] + 2) + '" fill="' + S.col + '">' + S.name + '</text>' +
-          '<text class="val" x="' + (R + 22) + '" y="' + (LY[k] + 30) + '">₹' + last + ' lakh' + (S.note ? ' <tspan fill="#5f6579" font-size="17">(' + S.note + ')</tspan>' : '') + '</text></g>';
+          '<text class="val" x="' + (R + 22) + '" y="' + (LY[k] + 30) + '">₹' + last + ' L a year' + (S.note ? ' <tspan fill="#5f6579" font-size="17">(' + S.note + ')</tspan>' : '') + '</text></g>';
       });
-      h += '<g class="abroad"><line x1="1450" x2="1450" y1="' + T + '" y2="' + B + '" stroke="#2b2f42" stroke-dasharray="6 8"/>' +
-        '<text class="sm" x="1480" y="' + (T + 20) + '">Abroad: US median</text>' +
-        '<text class="big" x="1480" y="' + (T + 110) + '" fill="#ffb547">₹98 L</text><text class="sm" x="1480" y="' + (T + 142) + '">UI/UX · $104k a year</text>' +
-        '<text class="big" x="1480" y="' + (T + 250) + '" fill="#5ce1e6">₹96 L</text><text class="sm" x="1480" y="' + (T + 282) + '">Animation &amp; VFX · $102k a year</text></g>';
+      h += '<g class="abroad"><line x1="1420" x2="1420" y1="0" y2="' + B + '" stroke="#2b2f42" stroke-dasharray="6 8"/>' +
+        '<text class="axcap" x="1450" y="24" text-anchor="start">Same job in the US</text>' +
+        '<text class="sm" x="1450" y="' + (T + 6) + '">median yearly pay</text>' +
+        '<text class="big" x="1450" y="' + (T + 110) + '" fill="#ffb547">₹98 L<tspan class="per"> / year</tspan></text><text class="sm" x="1450" y="' + (T + 142) + '">UI/UX ($104k)</text>' +
+        '<text class="big" x="1450" y="' + (T + 250) + '" fill="#5ce1e6">₹96 L<tspan class="per"> / year</tspan></text><text class="sm" x="1450" y="' + (T + 282) + '">Animation &amp; VFX ($102k)</text>' +
+        '<text class="sm dim" x="1450" y="' + (T + 380) + '">Middle of all US salaries,</text><text class="sm dim" x="1450" y="' + (T + 408) + '">every experience level.</text>' +
+        '<text class="sm dim" x="1450" y="' + (T + 436) + '">Rent and living cost more too.</text></g>';
       svg.innerHTML = h;
     }
     return {

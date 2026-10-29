@@ -203,23 +203,19 @@
       <div class="stage-n"><div class="node"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5"/></svg></div><div class="idx">08</div><div class="nm">Composite</div><div class="tools">Nuke, After Effects, SilhouetteFX</div></div>
     </div>
     <p class="lead pipe-foot" data-step="1">Eight departments. Hundreds of artists. And a <span class="white">lot</span> of code holding it together.</p>
-    <aside class="notes">The stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code, which leads straight into the Code Lab. (Covers the "Digital production pipelines" point from the proposal.)</aside>
+    <aside class="notes">ARIJIT SIR PRESENTS THIS SLIDE. Hand over: "Arijit sir builds these shots for a living. Sir, over to you." Pointers for him: the stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code, which leads straight into the Code Lab. (Covers the "Digital production pipelines" point from the proposal.)</aside>
   </section>
 
   <!-- ============ 5b · PIPELINE FILM (Arijit sir) ============
        ✏️ To change the video, replace the 11-character id in data-yt="…" (from the YouTube link). -->
-  <section class="slide" id="s-film" data-title="Pipeline film" data-hook="film">
+  <section class="slide" id="s-film" data-title="Pipeline film (Arijit sir)" data-hook="film">
     <div class="slide-title-tag">Inside a studio pipeline</div>
-    <div class="film-wrap">
-      <div class="film-frame" id="filmFrame" data-yt="5CbG0d_tnSg"></div>
-      <div class="film-side">
-        <div class="h3">The pipeline, in a real production.</div>
-        <p class="body">Presented by Arijit, Senior Faculty, VFX &amp; 3D.</p>
-        <p class="small film-help">Use the player's own controls to play, skip and scrub. Click anywhere on the dark area to give the clicker back to the slides.</p>
-        <a class="open-reel film-out" href="https://youtu.be/5CbG0d_tnSg" target="_blank" rel="noopener">Open on YouTube</a>
-      </div>
+    <div class="film-head">
+      <h2 class="h2">The pipeline, in a real production.</h2>
+      <a class="film-yt" href="https://youtu.be/5CbG0d_tnSg" target="_blank" rel="noopener" title="Open on YouTube" aria-label="Open on YouTube"><svg viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg></a>
     </div>
-    <aside class="notes">Arijit sir's segment. The video loads the first time this slide opens and pauses itself when you leave. If the frame says "Video unavailable", the owner has blocked embedding: use "Open on YouTube". After clicking inside the player, click the dark area once so the clicker moves slides again.</aside>
+    <div class="film-frame" id="filmFrame" data-yt="5CbG0d_tnSg"></div>
+    <aside class="notes">ARIJIT SIR'S SEGMENT (slides 7 and 8). He walks the pipeline on slide 7, then plays this video here, then hands back to you for the Code Lab. Hand-over line: "Arijit sir, over to you." Take it back with: "Thank you, sir. Now let's open the code behind every box he just showed you." The video loads the first time this slide opens and pauses itself when you leave. If the frame says "Video unavailable", click the small YouTube icon top-right of the heading. After clicking inside the player, click the dark area once so the clicker moves slides again.</aside>
   </section>
 
   <!-- ============ CODE LAB · chapter ============ -->
@@ -248,7 +244,7 @@
       <div class="lab-view"><canvas></canvas><div class="lab-hud"></div></div>
     </div>
     <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i>
-    <aside class="notes">Step 1 zooms into the pixels so the numbers appear. Step 2 turns it into edge detection (C=8, N=−1). Step 3 makes it a blur (all 1s). Then drag C and N yourself. Line: "Every filter in Photoshop and Instagram is a small grid of numbers sliding over a big grid of numbers. That is a nested for-loop you wrote in second semester." Upload media/lab/photo.jpg to use a real photo instead of the generated sunset.</aside>
+    <aside class="notes">WHAT YOU'RE SHOWING: a photo is just a grid of numbers (0–255 per pixel). A filter is a tiny 3×3 grid of numbers (the "kernel") that slides over every pixel: new pixel = C × the pixel itself + N × each of its 8 neighbours, then divided by the total so brightness stays the same. That is a nested for-loop over a 2D array, the code on the left. CLICKS: 1 zooms into the pixels so the numbers show. 2 = edge detection (C 8, N −1). 3 = blur (C 1, N 1). HOW TO CHANGE IT YOURSELF: hover an amber number in the code, hold the mouse button and drag right to increase, left to decrease. C (centre) = how much of the pixel itself. N (neighbours) = how much of the 8 pixels around it. RECIPES: C 1, N 0 → the original photo. C 1, N 1 (or C 0, N 1) → blur, "everything averages with its neighbours". C 1, N 2 → stronger blur. C 9, N −1 → sharpen, "every pixel pushes away from its neighbours". C 12, N −1 → gentle sharpen. C 8, N −1 → edge detection: flat areas go black, only outlines stay. C −4, N 1 → soft, ghostly. Rule to say out loud: "neighbours positive = blur, neighbours negative = sharpen or edges." Line: "Every filter in Photoshop and Instagram is a small grid of numbers sliding over a big grid of numbers. That is a nested for-loop you wrote in second semester." Optional: upload media/lab/photo.jpg to use a real photo instead of the generated sunset.</aside>
   </section>
   <!-- ============ CODE LAB 2 · Modelling ============ -->
   <section class="slide lab" id="s-lab-tree" data-title="Lab 2: Recursion grows trees." data-hook="lab-tree">
@@ -405,11 +401,12 @@
   <!-- ============ 8 · PLANS ============ -->
   <section class="slide" id="s-plans" data-title="Pick a path" data-hook="plans">
     <div class="draft-tag">Draft: confirm software lists</div>
-    <div class="slide-title-tag">Pick a path</div>
+    <div class="slide-title-tag offer-hot" id="offerHot">Pick a path</div>
     <h2 class="h2">Pick a path. Every one of them has code in it.</h2>
     <canvas class="plans-bg" id="plansBg" width="1920" height="1080" aria-hidden="true"></canvas>
     <div class="plans" id="plans"></div>
-    <aside class="notes">Read it like a pricing page, longest track first: one click per card. The background changes with each card: a game world, VFX sparks, motion-graphics shapes, then UI wireframes. Don't mention fees. Land on UI/UX: "6 months, done alongside your MCA." Course and software lists are from the ZICA Curriculum 2026–27 workbook and live in assets/config.js. Other tracks if asked: 12-month Professional Programs in 3D Animation, Film Making VFX, Graphic Design, UI & UX, Digital Design & Marketing, Visual Promotion & Ad Design; 2-month Creative Gen AI.</aside>
+    <div class="offer" id="offer" aria-hidden="true"></div>
+    <aside class="notes">HIDDEN ASM OFFER (only if needed): press O (or click the small grey "Pick a path" text, top right) → the hybrid plan for ASM opens with standard months. → rolls the months to the hybrid plan. → again goes straight to the next slide. Prices stay hidden: press R (or click "Minimum batch") only if asked; R again hides them. ← or Esc closes the offer. ——— Read it like a pricing page, longest track first: one click per card. The background changes with each card: a game world, VFX sparks, motion-graphics shapes, then UI wireframes. Don't mention fees. Land on UI/UX: "6 months, done alongside your MCA." Course and software lists are from the ZICA Curriculum 2026–27 workbook and live in assets/config.js. Other tracks if asked: 12-month Professional Programs in 3D Animation, Film Making VFX, Graphic Design, UI & UX, Digital Design & Marketing, Visual Promotion & Ad Design; 2-month Creative Gen AI.</aside>
   </section>
 
   <!-- ============ 9 · UI/UX SPOTLIGHT ============ -->
@@ -441,7 +438,7 @@
       <svg id="growthSvg" viewBox="0 0 1640 640" aria-label="Typical yearly salary in India by years of experience for UI/UX, motion graphics, 3D and game art, and VFX"></svg>
     </div>
     <p class="src">India: middle of the salary range reported on AmbitionBox (2025) for UI/UX Designer, Senior UI UX Designer, Senior Motion Graphic Designer, 3D Artist and FX Artist; motion start from Payscale (2023). Abroad: US median, BLS OEWS May 2025; ₹ at about ₹94 per $.</p>
-    <aside class="notes">Lines draw by themselves: typical yearly salary in India at the start, after 5 years and after 10 years, for each track. Point at UI/UX (the gold line): it climbs fastest. Click once: the abroad column shows US medians (about ₹98 lakh for UI/UX, ₹96 lakh for animation and VFX). Say: "Same skills, same software. Where you take them is up to you." Be honest if asked: these are middles of wide ranges; portfolio and city change everything.</aside>
+    <aside class="notes">All numbers are YEARLY salaries (per annum, CTC), in ₹ lakh. The lines are India: first job, after 5 years, after 10 years. Example: UI/UX starts around ₹4.6 L a year and reaches about ₹17.4 L a year after 10 years in India. The click shows the same job in the US: ₹98 L a year ($104,000) is the US median, i.e. the middle salary of ALL US UI/UX designers across every experience level, so compare it with the Indian lines as "the same skill, a different market", not as a 10-year figure. US rent and living costs are far higher too. Lines draw by themselves for each track. Point at UI/UX (the gold line): it climbs fastest. Click once: the abroad column shows US medians (about ₹98 lakh for UI/UX, ₹96 lakh for animation and VFX). Say: "Same skills, same software. Where you take them is up to you." Be honest if asked: these are middles of wide ranges; portfolio and city change everything.</aside>
     <i data-step="1" class="fade"></i>
   </section>
 
