@@ -401,61 +401,52 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; user-select: no
 .lab-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .lab-hud { position: absolute; left: 16px; bottom: 14px; font-family: var(--mono); font-size: 17px; color: #c6cadb; background: rgba(13,14,19,.72); padding: 6px 12px; border-radius: 8px; pointer-events: none; }
 
-/* ---------- Team ---------- */
+/* ---------- Team: circular "viewport gizmo" portraits ---------- */
 .team .h2 { font-size: 78px; }
 .slide.active .team-draft.show { display: block; }
 .slide.active .team-draft.show ~ .slide-title-tag { display: none; }
-.person { margin: 0; text-align: center; }
-.person .ph { position: relative; width: var(--w); aspect-ratio: 4 / 5; margin: 0 auto; border-radius: 26px; background: var(--ink-2); overflow: visible; }
-.person .ph::before { /* ambient glow behind the portrait; colour comes from the photo */
-  content: ''; position: absolute; inset: -18%; border-radius: 50%; z-index: 0; pointer-events: none;
-  background: radial-gradient(closest-side, rgb(var(--glow, 255 181 71) / .34), transparent 75%);
-  opacity: 0; transition: opacity 1.4s var(--ease) calc(var(--d) + .6s); }
-.person .frame { position: absolute; inset: 0; border-radius: 26px; overflow: hidden; z-index: 1; background: var(--ink-2);
-  clip-path: inset(0 0 100% 0); transition: clip-path 1.1s cubic-bezier(.7,0,.2,1) calc(var(--d) + .45s); }
-.person .img { position: absolute; inset: 0; background-size: cover; background-position: center 25%; transform: scale(1.12); transition: transform 2.4s var(--ease) calc(var(--d) + .45s); }
-.person .mono { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; letter-spacing: -.05em; font-variation-settings: 'wdth' 75; color: var(--key);
-  font-size: calc(var(--w) * .36);
-  background: radial-gradient(120% 90% at 30% 15%, rgba(255,181,71,.22), transparent 60%), linear-gradient(160deg, #1f2233, #12141c);
-  box-shadow: inset 0 0 0 1px rgba(255,181,71,.25); border-radius: 26px; }
-.person .scan { position: absolute; left: -2px; right: -2px; height: 3px; top: 0; z-index: 3; background: var(--act); box-shadow: 0 0 18px 3px rgba(92,225,230,.7); opacity: 0; }
-@keyframes scanDown { 0% { top: 0; opacity: 1; } 88% { top: 100%; opacity: 1; } 100% { top: 100%; opacity: 0; } }
-.person .wire { position: absolute; inset: -1px; width: calc(100% + 2px); height: calc(100% + 2px); z-index: 2; overflow: visible; pointer-events: none; }
-.person .wire rect { fill: none; stroke: var(--act); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: .9;
-  transition: stroke-dashoffset .7s var(--ease) var(--d), opacity .6s linear calc(var(--d) + 1.6s); }
-.person .hud { position: absolute; left: 12px; top: 10px; z-index: 4; font-family: var(--mono); font-size: 14px; color: var(--act); opacity: 0; transition: opacity .3s calc(var(--d) + .2s); }
-.person figcaption { display: flex; flex-direction: column; align-items: center; margin-top: 24px; opacity: 0; transform: translateY(16px);
-  transition: opacity .6s var(--ease) calc(var(--d) + 1.1s), transform .7s var(--ease) calc(var(--d) + 1.1s); }
+.person { margin: 0; text-align: center; position: relative; }
+.person .ph { position: relative; width: var(--w); height: var(--w); margin: 0 auto; }
+.person .ph::before { content: ''; position: absolute; inset: -30%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgb(var(--glow, 255 181 71) / .28), transparent 72%);
+  opacity: 0; transition: opacity 1.6s var(--ease) calc(var(--d) + .5s); }
+.person .disc { position: absolute; inset: 9%; border-radius: 50%; overflow: hidden; z-index: 1;
+  clip-path: circle(0% at 50% 50%); transition: clip-path 1s cubic-bezier(.6,0,.2,1) calc(var(--d) + .55s); background: #12141c; }
+.person .img { position: absolute; inset: 0; background-size: cover; background-position: center 22%; transform: scale(1.15); transition: transform 2.4s var(--ease) calc(var(--d) + .55s); }
+.person .mono { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 800; letter-spacing: -.04em; font-variation-settings: 'wdth' 78; color: var(--key);
+  font-size: calc(var(--w) * .27); background: radial-gradient(circle at 35% 25%, rgba(255,181,71,.2), transparent 60%), linear-gradient(160deg, #1f2233, #10121a); }
+.person .gizmo { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; overflow: visible; pointer-events: none; }
+.person .gizmo .ring { fill: none; stroke: #3a3f55; stroke-width: 1.2; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1s var(--ease) var(--d); }
+.person .gizmo .arc { fill: none; stroke: var(--key); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: .16 .84; stroke-dashoffset: .16; opacity: 0; transition: opacity .6s calc(var(--d) + .6s); }
+.person .gizmo .tick { stroke: #4a4f66; stroke-width: 1.2; opacity: 0; transition: opacity .6s calc(var(--d) + .3s); }
+.person .gizmo .orbit { transform-origin: 50px 50px; }
+.slide.active .person .gizmo .orbit { animation: orbit 14s linear calc(var(--d) + .6s) infinite; }
+@keyframes orbit { to { transform: rotate(360deg); } }
+.person .gizmo .key { fill: var(--key); opacity: 0; transition: opacity .4s calc(var(--d) + .8s); }
+.person figcaption { display: flex; flex-direction: column; align-items: center; margin-top: 26px; opacity: 0; transform: translateY(14px);
+  transition: opacity .6s var(--ease) calc(var(--d) + 1s), transform .7s var(--ease) calc(var(--d) + 1s); }
 .person .pname { font-size: 34px; font-weight: 750; letter-spacing: -.025em; line-height: 1.05; }
-.person .prole { font-size: 22px; color: var(--key); margin-top: 8px; }
+.person .prole { font-size: 21px; color: var(--key); margin-top: 8px; }
 .person .pbio { font-size: 20px; color: var(--mute); margin-top: 8px; max-width: 26ch; line-height: 1.35; }
 .person .pbio:empty { display: none; }
-/* arrived */
 .slide.active .person .ph::before { opacity: 1; }
-.slide.active .person .frame { clip-path: inset(0 0 0 0); }
+.slide.active .person .disc { clip-path: circle(50% at 50% 50%); }
 .slide.active .person .img { transform: scale(1); }
-.slide.active .person .scan { animation: scanDown 1.1s cubic-bezier(.7,0,.2,1) calc(var(--d) + .45s) both; }
-.slide.active .person .wire rect { stroke-dashoffset: 0; opacity: 0; }
-.slide.active .person .hud { opacity: 1; transition: opacity .3s calc(var(--d) + .2s); }
+.slide.active .person .gizmo .ring { stroke-dashoffset: 0; }
+.slide.active .person .gizmo .arc, .slide.active .person .gizmo .tick, .slide.active .person .gizmo .key { opacity: 1; }
 .slide.active .person figcaption { opacity: 1; transform: none; }
-.person.done .hud { opacity: 0 !important; transition: opacity .4s; }
-/* layouts */
-.team-duo { display: flex; justify-content: center; gap: 180px; margin-top: 50px; }
-.team-duo .person { --w: 400px; }
-.team-duo .person .pname { font-size: 48px; }
+.team-duo { display: flex; justify-content: center; gap: 200px; margin-top: 56px; }
+.team-duo .person { --w: 470px; }
+.team-duo .person .pname { font-size: 50px; }
 .team-duo .person .prole { font-size: 26px; }
-.team-tree { position: relative; margin-top: 34px; }
-.team-tree .person { --w: 176px; }
-.team-tree .person .pname { font-size: 30px; }
-.team-tree .person .prole { font-size: 21px; }
-.team-tree .person.top { position: relative; z-index: 1; }
-.tree-lines { display: block; width: 1640px; height: 70px; margin: 14px 0 10px; overflow: visible; }
-.tree-lines path { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: 2400; stroke-dashoffset: 2400; vector-effect: non-scaling-stroke; transition: stroke-dashoffset 1.2s var(--ease) 1.2s, stroke .6s 1.2s; }
-.slide.active .tree-lines path { stroke-dashoffset: 0; stroke: #4a4f66; }
-.team-tree .tree-lines { position: absolute; left: 0; top: 316px; height: 60px; margin: 0; }
-.team-row { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 70px; }
+.team-rail { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 110px; }
+.team-rail .person { --w: 320px; }
+.team-rail .person .pname { font-size: 32px; }
+.rail-line { position: absolute; left: 6%; right: 6%; top: 160px; height: 2px; background: linear-gradient(90deg, transparent, #3a3f55 8%, #3a3f55 92%, transparent);
+  transform: scaleX(0); transform-origin: left; transition: transform 2.4s var(--ease) .1s; }
+.slide.active .rail-line { transform: scaleX(1); }
 @media (prefers-reduced-motion: reduce) {
-  .person *, .person .ph::before, .tree-lines path { transition: none !important; }
+  .person *, .person .ph::before, .rail-line { transition: none !important; animation: none !important; }
 }
 
 /* ---------- Ambient glow from media ---------- */
@@ -523,6 +514,39 @@ body.admin .admin-bar { display: block; }
 .admin-bar .arch { list-style: none; margin-top: 12px; }
 .admin-bar .arch li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font: 18px var(--mono); color: var(--mute); }
 .admin-bar .arch li.none { font-family: var(--display); }
+
+/* ---------- Code Lab cover ---------- */
+#s-lab .glyphs { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .55; pointer-events: none;
+  -webkit-mask-image: radial-gradient(ellipse at 70% 55%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse at 70% 55%, #000 20%, transparent 75%); }
+.cover-grid { position: relative; display: grid; grid-template-columns: 1fr 900px; gap: 70px; align-items: center; height: 760px; }
+.term pre { font-size: 23px; line-height: 1.75; min-height: 520px; padding: 30px 34px; }
+.term .ok { color: #4ade80; } .term .dim { color: #5f6579; } .term .hl { color: var(--key); } .term .fn { color: var(--act); }
+
+/* ---------- Venn that grows ---------- */
+.venn-box { height: 650px; display: grid; place-items: center; }
+#venn { width: 760px; height: 650px; }
+.venn-copy { display: grid; gap: 22px; }
+.vstep { font-size: 34px; line-height: 1.25; color: #4a4f66; transition: color .6s, opacity .6s; max-width: 24ch; }
+.vstep b { font-weight: 700; color: inherit; }
+.vstep.on { color: var(--text); } .vstep.on b { color: var(--key); }
+.vstep.past { color: var(--mute); }
+.venn-copy .chips.vstep { opacity: 0; } .venn-copy .chips.vstep.on { opacity: 1; }
+
+/* ---------- 50 ms ---------- */
+.ms-wrap { display: flex; flex-direction: column; justify-content: center; height: 780px; }
+.ms-num { font-size: 420px; font-weight: 800; letter-spacing: -.06em; line-height: .8; font-variation-settings: 'wdth' 72; font-variant-numeric: tabular-nums; }
+.ms-num small { font-size: 120px; color: var(--key); margin-left: 24px; letter-spacing: -.02em; }
+.ms-bar { height: 6px; background: var(--line); border-radius: 3px; margin-top: 56px; width: 1200px; overflow: hidden; }
+.ms-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--act), var(--key)); }
+.ms-line { font-size: 54px; font-weight: 700; letter-spacing: -.03em; margin-top: 56px; max-width: 30ch; line-height: 1.1; }
+.ms-sub { font-size: 36px; color: var(--mute); margin-top: 22px; }
+
+/* ---------- Pick a path: living backgrounds ---------- */
+.plans-bg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: .75;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 8%, #000 35%, #000 80%, transparent); mask-image: linear-gradient(to bottom, transparent 8%, #000 35%, #000 80%, transparent); }
+#s-plans .h2, #s-plans .plans { position: relative; z-index: 1; }
+.plan { transition: box-shadow .6s, border-color .6s; }
+.plan.focus { box-shadow: 0 0 0 1px rgba(255,181,71,.5), 0 30px 80px rgba(0,0,0,.5); }
 
 /* overview (press O) */
 body.overview .stage { overflow: auto; }

@@ -126,54 +126,49 @@
     <div class="draft-tag team-draft">Draft: add the missing name</div>
     <div class="slide-title-tag">ZICA Pune, Kothrud</div>
     <h2 class="h2">The team you would learn with.</h2>
-    <div class="team-tree">
-      <svg class="tree-lines" viewBox="0 0 1640 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M820 0 V60 M273 60 H1367 M273 60 V120 M820 60 V120 M1367 60 V120"/>
-      </svg>
-
-      <!-- ✏️ MANAGER (top) -->
-      <figure class="person top" data-photo="media/team/manager.jpg">
+    <div class="team-rail">
+      <div class="rail-line" aria-hidden="true"></div>
+        <!-- ✏️ MANAGER (top) -->
+        <figure class="person" data-photo="media/team/manager.jpg">
         <div class="ph"></div>
         <figcaption>
-          <b class="pname">Shikha Bangro</b>
-          <span class="prole">Centre Manager</span>
-          <span class="pbio"></span>
+        <b class="pname">Shikha Bangro</b>
+        <span class="prole">Centre Manager</span>
+        <span class="pbio"></span>
         </figcaption>
-      </figure>
+        </figure>
 
-      <div class="team-row">
         <!-- ✏️ ACADEMIC HEAD -->
         <figure class="person" data-photo="media/team/academic-head.jpg">
-          <div class="ph"></div>
-          <figcaption>
-            <b class="pname">Chaitanya Jadkar</b>
-            <span class="prole">Academic Head</span>
-            <span class="pbio"></span>
-          </figcaption>
+        <div class="ph"></div>
+        <figcaption>
+        <b class="pname">Chaitanya Jadkar</b>
+        <span class="prole">Academic Head</span>
+        <span class="pbio"></span>
+        </figcaption>
         </figure>
 
         <!-- ✏️ SENIOR FACULTY -->
         <figure class="person" data-photo="media/team/vfx-3d-faculty.jpg">
-          <div class="ph"></div>
-          <figcaption>
-            <b class="pname">Arijit</b>
-            <span class="prole">Senior Faculty, VFX &amp; 3D</span>
-            <span class="pbio"></span>
-          </figcaption>
+        <div class="ph"></div>
+        <figcaption>
+        <b class="pname">Arijit</b>
+        <span class="prole">Senior Faculty, VFX &amp; 3D</span>
+        <span class="pbio"></span>
+        </figcaption>
         </figure>
 
         <!-- ✏️ CREATIVE HEAD -->
         <figure class="person" data-photo="media/team/creative-head.jpg">
-          <div class="ph"></div>
-          <figcaption>
-            <b class="pname">Sachin</b>
-            <span class="prole">Creative Head</span>
-            <span class="pbio"></span>
-          </figcaption>
+        <div class="ph"></div>
+        <figcaption>
+        <b class="pname">Sachin</b>
+        <span class="prole">Creative Head</span>
+        <span class="pbio"></span>
+        </figcaption>
         </figure>
-      </div>
     </div>
-    <aside class="notes">The manager renders first, the lines draw, then the three of you arrive. One line each on what students learn from that person. Introduce yourself last-but-not-least: "and I run the academics, which is why this deck has code in it."</aside>
+    <aside class="notes">The four arrive one by one along the timeline, like keyframes: manager, academic head, senior faculty, creative head. One line each on what students learn from that person. Introduce yourself last-but-not-least: "and I run the academics, which is why this deck has code in it."</aside>
   </section>
 
   <!-- ============ 4 · YOU ALREADY SPEAK IT ============ -->
@@ -228,12 +223,17 @@
   </section>
 
   <!-- ============ CODE LAB · chapter ============ -->
-  <section class="slide floor" id="s-lab" data-title="Code Lab">
+  <section class="slide" id="s-lab" data-title="Code Lab" data-hook="labcover">
+    <canvas class="glyphs" id="glyphs" aria-hidden="true"></canvas>
     <div class="slide-title-tag">Code Lab</div>
-    <h1 class="h-mega">Code Lab.</h1>
-    <p class="lead" style="margin-top:36px;max-width:36ch">Seven departments of a studio. Seven pieces of code you already understand.</p>
-    <ol class="lab-chips" data-step="1"><li><b>01</b>Texture</li><li><b>02</b>Modelling</li><li><b>03</b>Environments</li><li><b>04</b>Rigging</li><li><b>05</b>Animation and UI/UX</li><li><b>06</b>Lighting and rendering</li><li><b>07</b>VFX and crowds</li></ol>
-    <aside class="notes">Chapter card. "Let's open each department and look at the code running inside it." Click once to show the seven stops, then go. Each Code Lab slide: the amber numbers in the code can be dragged with the mouse; the clicker plays the planned changes.</aside>
+    <div class="cover-grid">
+      <div>
+        <h1 class="h-mega">Code Lab.</h1>
+        <p class="lead" style="margin-top:36px;max-width:22ch">Every department of a studio runs on code. Here are seven you already know.</p>
+      </div>
+      <div class="editor term"><div class="bar"><i class="dot"></i><i class="dot"></i><i class="dot"></i>&nbsp; studio — zsh</div><pre id="bootlog"></pre></div>
+    </div>
+    <aside class="notes">Let the studio "boot" by itself (about 5 seconds), don't talk over the first lines. Then: "A film studio is a software company that happens to make pictures. Every department you see in a movie's credits runs on code. Let's open seven of them, and you'll recognise every one from your MCA syllabus: arrays, recursion, functions, trigonometry, CSS, parallel computing, algorithms." Press → to open the first.</aside>
   </section>
   <!-- ============ CODE LAB 1 · Texture ============ -->
   <section class="slide lab" id="s-lab-img" data-title="Lab 1: Every photo is a 2D array." data-hook="lab-img">
@@ -356,6 +356,19 @@
     <aside class="notes">(Covers "Technology integration in creative industries".) Row 1 shows first, click for row 2. Don't read the cards. Pick one per row and give a 10-second example. AR/VR lives in the Three.js/WebXR card.</aside>
   </section>
 
+  <!-- ============ 7a · 50 MILLISECONDS (lead-in to UI/UX) ============ -->
+  <section class="slide" id="s-50ms" data-title="50 milliseconds" data-hook="ms50">
+    <div class="slide-title-tag">First impressions</div>
+    <div class="ms-wrap">
+      <div class="ms-num"><span id="msVal">0</span><small>ms</small></div>
+      <div class="ms-bar"><i id="msBar"></i></div>
+      <p class="ms-line" data-step="1">That's how long a user takes to decide whether your app looks good.</p>
+      <p class="ms-sub" data-step="2">Before they read a word. Before your code even runs.</p>
+    </div>
+    <p class="src">Lindgaard et al., "Attention web designers: You have 50 milliseconds to make a good first impression!", Behaviour &amp; Information Technology, 2006</p>
+    <aside class="notes">The counter runs to 50 by itself (that's literally 50 ms stretched out so you can see it). Click: "That's how long a user takes to judge your app's looks." Click: "Before they read a word, before your code runs." Then: "So let me show you two apps with the same code." Press → for the login comparison.</aside>
+  </section>
+
   <!-- ============ 7 · DEV vs DESIGNED ============ -->
   <section class="slide" id="s-ux" data-title="Works vs feels right" data-hook="ux">
     <div class="slide-title-tag">UI/UX</div>
@@ -397,8 +410,9 @@
     <div class="draft-tag">Draft: confirm software lists</div>
     <div class="slide-title-tag">Pick a path</div>
     <h2 class="h2">Pick a path. Every one of them has code in it.</h2>
+    <canvas class="plans-bg" id="plansBg" width="1920" height="1080" aria-hidden="true"></canvas>
     <div class="plans" id="plans"></div>
-    <aside class="notes">Read it like a pricing page, longest track first: one click per card. Don't mention fees. Land on UI/UX: "6 months, done alongside your MCA." Course and software lists are from the ZICA Curriculum 2026–27 workbook and live in assets/config.js. Other tracks if asked: 12-month Professional Programs in 3D Animation, Film Making VFX, Graphic Design, UI & UX, Digital Design & Marketing, Visual Promotion & Ad Design; 2-month Creative Gen AI.</aside>
+    <aside class="notes">Read it like a pricing page, longest track first: one click per card. The background changes with each card: a game world, VFX sparks, motion-graphics shapes, then UI wireframes. Don't mention fees. Land on UI/UX: "6 months, done alongside your MCA." Course and software lists are from the ZICA Curriculum 2026–27 workbook and live in assets/config.js. Other tracks if asked: 12-month Professional Programs in 3D Animation, Film Making VFX, Graphic Design, UI & UX, Digital Design & Marketing, Visual Promotion & Ad Design; 2-month Creative Gen AI.</aside>
   </section>
 
   <!-- ============ 9 · UI/UX SPOTLIGHT ============ -->
@@ -491,22 +505,21 @@
   </section>
 
   <!-- ============ 14 · AI ============ -->
-  <section class="slide" id="s-ai" data-title="Gen AI">
+  <section class="slide" id="s-ai" data-title="Gen AI" data-hook="venn">
     <div class="slide-title-tag">Gen AI</div>
     <h2 class="h2">AI makes the first draft. You make the final one.</h2>
     <div class="ai-grid">
-      <div class="triad">
-        <div class="c c1"><span>Code</span></div>
-        <div class="c c2"><span>Design</span></div>
-        <div class="c c3"><span>AI</span></div>
-        <div class="you">You</div>
-      </div>
-      <div>
-        <p class="lead" data-step="1">The person who can code, design and direct AI tools is the one every studio is trying to hire right now.</p>
-        <div class="chips" data-step="1"><span>Figma</span><span>Magnific</span><span>Runway</span><span>ComfyUI</span><span>Midjourney</span><span>Claude</span></div>
+      <div class="venn-box"><canvas id="venn" width="1520" height="1300" aria-label="Code, Design and AI circles; the overlap marked You grows"></canvas></div>
+      <div class="venn-copy">
+        <p class="vstep" data-v="0">Most people can only do one of these.</p>
+        <p class="vstep" data-v="1"><b>You already code.</b> That circle is bigger than most of the room thinks.</p>
+        <p class="vstep" data-v="2"><b>We add design.</b> The overlap is where clients pay more.</p>
+        <p class="vstep" data-v="3"><b>Add AI on top.</b> The space only you can fill keeps growing.</p>
+        <div class="chips vstep" data-v="3"><span>Figma</span><span>Magnific</span><span>Runway</span><span>ComfyUI</span><span>Midjourney</span><span>Claude</span></div>
       </div>
     </div>
-    <aside class="notes">Keep it short. The "You" in the middle is the whole pitch. Mention ZICA's Gen AI batch if relevant.</aside>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i>
+    <aside class="notes">Three clicks. Click 1: the Code circle grows ("you already code; most designers don't"). Click 2: Design grows ("that's what we teach"). Click 3: AI joins and the amber "You" zone is at its biggest ("AI multiplies what you already know; it doesn't replace the person who knows what good looks like").</aside>
   </section>
 
   <!-- ============ 15 · STUDENT WALL ============ -->
