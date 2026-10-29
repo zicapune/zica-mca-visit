@@ -52,8 +52,8 @@
     var names = await listNames(folder);
     var out = [];
     names.forEach(function (n) {
-      if (VIDEO.test(n)) out.push({ kind: 'video', src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
-      else if (IMAGE.test(n)) out.push({ kind: 'image', src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
+      if (VIDEO.test(n)) out.push({ kind: 'video', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
+      else if (IMAGE.test(n)) out.push({ kind: 'image', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
     });
     if (names.indexOf('youtube.txt') !== -1) {
       try {
@@ -64,12 +64,60 @@
           var id = ytId(parts[1].trim());
           if (!id) return;
           var label = parts[0].trim();
-          out.push({ kind: 'youtube', id: id, src: 'https://www.youtube.com/embed/' + id, thumb: 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg', title: prettify(label), sort: label });
+          out.push({ kind: 'youtube', path: folder + '/youtube:' + id, id: id, src: 'https://www.youtube.com/embed/' + id, thumb: 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg', title: prettify(label), sort: label });
         });
       } catch (e) {}
     }
-    return out.sort(natural);
+    await DeckAdmin.ready;
+    return out.filter(function (it) { return !DeckAdmin.isHidden(it.path); }).sort(natural);
   }
+
+  /* ---------------------------------------------------------------
+     Admin archive: hidden media is never deleted, only listed here.
+     Stored in Supabase table deck_hidden when it exists (same list on
+     every PC), otherwise in this browser.
+     --------------------------------------------------------------- */
+  var DeckAdmin = (function () {
+    var cfg = (window.DECK_CONFIG || {}).ADMIN || {};
+    var LS = 'deck-hidden', hidden = new Set(), remote = false;
+    function lsLoad() { try { (JSON.parse(localStorage.getItem(LS) || '[]')).forEach(function (p) { hidden.add(p); }); } catch (e) {} }
+    function lsSave() { try { localStorage.setItem(LS, JSON.stringify(Array.from(hidden))); } catch (e) {} }
+    function api(path, opts) {
+      opts = opts || {};
+      opts.headers = Object.assign({ apikey: cfg.SUPABASE_KEY, authorization: 'Bearer ' + cfg.SUPABASE_KEY, 'content-type': 'application/json' }, opts.headers || {});
+      return fetch(cfg.SUPABASE_URL.replace(/\/+$/, '') + path, opts);
+    }
+    var ready = (async function () {
+      if (cfg.SUPABASE_URL && cfg.SUPABASE_KEY) {
+        try {
+          var r = await api('/rest/v1/deck_hidden?select=path');
+          if (r.ok) { (await r.json()).forEach(function (x) { hidden.add(x.path); }); remote = true; return; }
+        } catch (e) {}
+      }
+      lsLoad();
+    })();
+    async function set(path, hide) {
+      if (hide) hidden.add(path); else hidden.delete(path);
+      if (remote) {
+        try {
+          var r = await api('/rest/v1/rpc/deck_set_hidden', { method: 'POST', body: JSON.stringify({ p_pin: sessionStorage.getItem('deck-admin') || '', p_path: path, p_hidden: hide }) });
+          if (r.ok) return true;
+        } catch (e) {}
+      }
+      lsSave();
+      return true;
+    }
+    return {
+      ready: ready,
+      isHidden: function (p) { return hidden.has(p); },
+      list: function () { return Array.from(hidden).sort(); },
+      hide: function (p) { return set(p, true); },
+      restore: function (p) { return set(p, false); },
+      where: function () { return remote ? 'Supabase (every PC)' : 'this browser only'; },
+      checkPin: function (pin) { return pin === String(cfg.PIN || '1111'); }
+    };
+  })();
+  window.DeckAdmin = DeckAdmin;
 
   window.DeckMedia = { list: list };
 })();

@@ -76,7 +76,7 @@
     onStep(cur, step);
     updateTimeline();
     syncVideos();
-    try { history.replaceState(null, '', '#' + (cur + 1) + (step ? '.' + step : '')); } catch (e) {}
+    try { sessionStorage.setItem('deck-pos', JSON.stringify([cur, step])); } catch (e) {}
     broadcast();
   }
 
@@ -97,6 +97,7 @@
   document.addEventListener('keydown', function (e) {
     var t = e.target;
     if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && /Arrow|Home|End|Page/.test(e.key)) return;
+    if (t && t.tagName === 'INPUT' && t.type !== 'range') return;
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var k = e.key;
     if (k === 'ArrowRight' || k === 'PageDown' || k === ' ' || k === 'ArrowDown' || (k === 'Enter' && !numBuf)) { e.preventDefault(); next(); }
@@ -108,8 +109,9 @@
     else if (k === 'f' || k === 'F') toggleFS();
     else if (k === 't' || k === 'T') tl.classList.toggle('hidden');
     else if (k === 'p' || k === 'P') openPresenter();
-    else if (k === 'b' || k === 'B' || k === '.') stage.style.opacity = stage.style.opacity === '0' ? '1' : '0';
+    else if (k === 'b' || k === 'B') stage.style.opacity = stage.style.opacity === '0' ? '1' : '0';
     else if (k === '?' || k === 'h' || k === 'H') $('#help').classList.toggle('show');
+    else if (k === 'm' || k === 'M') adminGate();
     else if (k === 'Escape') $('#help').classList.remove('show');
   });
   // give arrow keys back to the deck after using a slider
@@ -428,26 +430,82 @@
 
   /* ---- 15 · student wall ---- */
   hooks.wall = (function () {
-    var loaded = false;
+    var loaded = false, items = [], at = 0, timer = 0, el, track;
+    function esc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+    function tileHTML(it) {
+      var inner = it.kind === 'video' ? '<video src="' + it.src + '" muted loop playsinline preload="metadata"></video>'
+        : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" decoding="async">' : '<img src="' + it.src + '" alt="" decoding="async" loading="lazy">';
+      return '<figure class="ct" data-path="' + esc(it.path) + '">' + inner +
+        (it.title ? '<figcaption>' + esc(it.title) + '</figcaption>' : '') +
+        '<button class="adm-x" title="Move to archive" aria-label="Move to archive">✕</button></figure>';
+    }
+    function layout(instant) {
+      var tiles = $$('.ct', track); if (!tiles.length) return;
+      at = (at + tiles.length) % tiles.length;
+      var x = 0, centre = 0;
+      tiles.forEach(function (t, i) {
+        var w = t.offsetWidth;
+        if (i === at) centre = x + w / 2;
+        x += w + 28;
+        t.classList.toggle('on', i === at);
+        var v = t.querySelector('video');
+        if (v) { if (i === at && slides[cur] === el.closest('.slide')) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }
+      });
+      track.style.transition = instant ? 'none' : '';
+      track.style.transform = 'translateX(' + (el.offsetWidth / 2 - centre) + 'px)';
+      $$('.car-dots i', el).forEach(function (d, i) { d.classList.toggle('on', i === at); });
+    }
+    function go(d) { at += d; layout(); restart(); }
+    function restart() { clearInterval(timer); timer = setInterval(function () { if (slides[cur] === el.closest('.slide')) { at++; layout(); } }, 6000); }
+    function sizeTile(t) {
+      var m = t.querySelector('img, video'), H = 600;
+      function set(ar) { t.style.width = Math.round(H * Math.max(0.6, Math.min(1.9, ar || 16 / 9))) + 'px'; layout(true); }
+      if (m.tagName === 'VIDEO') m.addEventListener('loadedmetadata', function () { set(m.videoWidth / m.videoHeight); });
+      else if (m.complete && m.naturalWidth) set(m.naturalWidth / m.naturalHeight);
+      else m.addEventListener('load', function () { set(m.naturalWidth / m.naturalHeight); });
+      set(16 / 9);
+    }
+    function build() {
+      if (!items.length) {
+        el.className = '';
+        el.innerHTML = '<div class="wall-empty"><div class="h3">Student work drops in here.</div><div class="body">Upload files to <code>media/reel/</code> named <code>01-title.mp4</code>, <code>02-title.jpg</code>…</div></div>';
+        return;
+      }
+      el.className = 'car';
+      el.innerHTML = '<div class="car-track">' + items.map(tileHTML).join('') + '</div>' +
+        '<button class="car-btn prev" aria-label="Previous">‹</button><button class="car-btn next" aria-label="Next">›</button>' +
+        '<div class="car-dots">' + items.map(function () { return '<i></i>'; }).join('') + '</div>';
+      track = el.querySelector('.car-track');
+      $$('.ct', track).forEach(function (t, i) {
+        sizeTile(t);
+        t.addEventListener('click', function (e) {
+          if (e.target.closest('.adm-x')) return;
+          if (i !== at) { at = i; layout(); restart(); return; }
+          var v = t.querySelector('video'); if (v) { v.muted = !v.muted; }
+        });
+      });
+      el.querySelector('.prev').onclick = function () { go(-1); };
+      el.querySelector('.next').onclick = function () { go(1); };
+      var x0 = null;
+      track.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+      track.addEventListener('pointerup', function (e) { if (x0 !== null && Math.abs(e.clientX - x0) > 40) go(e.clientX < x0 ? 1 : -1); x0 = null; });
+      layout(true); restart();
+    }
+    document.addEventListener('keydown', function (e) {
+      if (!el || slides[cur] !== el.closest('.slide') || !track) return;
+      if (e.key === ',' || e.key === '[') go(-1);
+      if (e.key === '.' || e.key === ']') go(1);
+    });
     return {
       enter: function (sl) {
-        ambient(sl);
-        if (loaded || !window.DeckMedia) return; loaded = true;
-        var el = $('#wall');
-        window.DeckMedia.list('media/reel').then(function (items) {
-          if (!items.length) {
-            el.innerHTML = '<div class="wall-empty"><div class="h3">Student work drops in here.</div><div class="body">Upload files to <code>media/reel/</code> named <code>01-title.mp4</code>, <code>02-title.jpg</code>…</div></div>';
-            return;
-          }
-          el.className = 'wall';
-          el.innerHTML = items.slice(0, 7).map(function (it) {
-            var inner = it.kind === 'video' ? '<video src="' + it.src + '" muted loop playsinline preload="metadata" data-autoplay="1"></video>'
-              : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="">' : '<img src="' + it.src + '" alt="">';
-            return '<div class="tile">' + inner + (it.title ? '<div class="cap">' + it.title + '</div>' : '') + '</div>';
-          }).join('');
-          syncVideos();
-        });
-      }
+        el = $('#wall');
+        if (loaded) { layout(true); restart(); ambient(sl); return; }
+        loaded = true;
+        if (!window.DeckMedia) return;
+        window.DeckMedia.list('media/reel').then(function (list) { items = list; build(); ambient(sl); });
+      },
+      leave: function () { clearInterval(timer); $$('#wall video').forEach(function (v) { v.pause(); }); },
+      remove: function (path) { items = items.filter(function (it) { return it.path !== path; }); at = Math.min(at, items.length - 1); build(); }
     };
   })();
 
@@ -496,7 +554,8 @@
     clearInterval(ambTimer);
     if (!slide) return;
     function tick() {
-      var cols = $$('img, video', slide).filter(function (m) { return (m.complete || m.readyState >= 2) && m.offsetParent; }).map(sampleColour).filter(Boolean);
+      var pool = $$('.ct.on img, .ct.on video', slide); if (!pool.length) pool = $$('img, video', slide);
+      var cols = pool.filter(function (m) { return (m.complete || m.readyState >= 2) && m.offsetParent; }).map(sampleColour).filter(Boolean);
       if (!cols.length) return;
       var c = [0, 0, 0]; cols.forEach(function (k) { c[0] += k[0]; c[1] += k[1]; c[2] += k[2]; });
       slide.style.setProperty('--amb', c.map(function (v) { return Math.round(v / cols.length); }).join(' '));
@@ -519,9 +578,9 @@
             if (!items.length) { tile.classList.add('empty'); return; }
             box.innerHTML = items.map(function (it, i) {
               return it.kind === 'video'
-                ? '<video class="vm' + (i ? '' : ' on') + '" src="' + it.src + '" muted loop playsinline preload="' + (i ? 'none' : 'auto') + '" data-autoplay="1"></video>'
-                : '<img class="vm' + (i ? '' : ' on') + '" src="' + it.src + '" alt="" decoding="async"' + (i ? ' loading="lazy"' : '') + '>';
-            }).join('');
+                ? '<video class="vm' + (i ? '' : ' on') + '" data-path="' + it.path + '" src="' + it.src + '" muted loop playsinline preload="' + (i ? 'none' : 'auto') + '" data-autoplay="1"></video>'
+                : '<img class="vm' + (i ? '' : ' on') + '" data-path="' + it.path + '" src="' + it.src + '" alt="" decoding="async"' + (i ? ' loading="lazy"' : '') + '>';
+            }).join('') + '<button class="adm-x" title="Move the photo on screen to archive">✕</button>';
             syncVideos();
             if (items.length > 1) {
               var k = 0, els = $$('.vm', box);
@@ -533,6 +592,25 @@
           });
         });
       },
+    };
+  })();
+
+  /* ---- Pipeline film: YouTube player that loads once and pauses when you leave ---- */
+  hooks.film = (function () {
+    var loaded = false, ifr = null;
+    function cmd(f) { try { ifr && ifr.contentWindow.postMessage(JSON.stringify({ event: 'command', func: f, args: [] }), '*'); } catch (e) {} }
+    return {
+      enter: function (s) {
+        if (loaded) return; loaded = true;
+        var box = s.querySelector('#filmFrame'), id = box.getAttribute('data-yt');
+        ifr = document.createElement('iframe');
+        ifr.src = 'https://www.youtube-nocookie.com/embed/' + id + '?rel=0&modestbranding=1&playsinline=1&enablejsapi=1';
+        ifr.title = 'Pipeline film';
+        ifr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        ifr.allowFullscreen = true;
+        box.appendChild(ifr);
+      },
+      leave: function () { cmd('pauseVideo'); }
     };
   })();
 
@@ -620,13 +698,72 @@
     };
   })();
 
+  /* ---------- Admin mode: M → code 1111 → ✕ moves media to the Archive ---------- */
+  function adminGate() {
+    if (document.body.classList.contains('admin')) { adminBar(); return; }
+    var g = $('#adminGate');
+    g.classList.add('show');
+    var inp = g.querySelector('input'); inp.value = ''; g.querySelector('.err').textContent = '';
+    setTimeout(function () { inp.focus(); }, 30);
+  }
+  function adminOn(pin) {
+    try { sessionStorage.setItem('deck-admin', pin); } catch (e) {}
+    document.body.classList.add('admin'); adminBar();
+  }
+  function adminBar() {
+    var b = $('#adminBar'), A = window.DeckAdmin;
+    var list = A ? A.list() : [];
+    b.querySelector('.n').textContent = list.length;
+    b.querySelector('.where').textContent = A ? A.where() : '';
+    b.querySelector('.arch').innerHTML = list.length ? list.map(function (p) {
+      return '<li><span>' + p.replace(/^media\//, '') + '</span><button data-restore="' + p.replace(/"/g, '&quot;') + '">Restore</button></li>';
+    }).join('') : '<li class="none">Nothing archived.</li>';
+  }
+  (function () {
+    var g = $('#adminGate'), inp = g.querySelector('input');
+    g.querySelector('form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (window.DeckAdmin && window.DeckAdmin.checkPin(inp.value)) { g.classList.remove('show'); adminOn(inp.value); inp.blur(); }
+      else { g.querySelector('.err').textContent = 'Wrong code.'; inp.select(); }
+    });
+    g.querySelector('.cancel').onclick = function () { g.classList.remove('show'); inp.blur(); };
+    var b = $('#adminBar');
+    b.querySelector('.toggle').onclick = function () { b.classList.toggle('open'); adminBar(); };
+    b.querySelector('.exit').onclick = function () { document.body.classList.remove('admin'); b.classList.remove('open'); try { sessionStorage.removeItem('deck-admin'); } catch (e) {} };
+    b.addEventListener('click', function (e) {
+      var r = e.target.closest('[data-restore]'); if (!r) return;
+      window.DeckAdmin.restore(r.getAttribute('data-restore')).then(function () { location.reload(); });
+    });
+    // ✕ on any archived-able media
+    stage.addEventListener('click', function (e) {
+      var x = e.target.closest('.adm-x'); if (!x || !document.body.classList.contains('admin')) return;
+      e.stopPropagation();
+      var holder = x.closest('[data-path]');
+      if (x.closest('.vtile')) holder = x.closest('.vtile').querySelector('.vm.on');
+      if (!holder) return;
+      var path = holder.getAttribute('data-path');
+      window.DeckAdmin.hide(path).then(function () {
+        if (x.closest('#wall')) hooks.wall.remove(path);
+        else { holder.remove(); }
+        adminBar();
+      });
+    }, true);
+    try { var pin = sessionStorage.getItem('deck-admin'); if (pin && window.DeckAdmin && window.DeckAdmin.checkPin(pin)) adminOn(pin); } catch (e) {}
+  })();
+
   /* ---------- Code Lab hooks (assets/lab.js) ---------- */
   if (window.LAB_HOOKS) Object.keys(window.LAB_HOOKS).forEach(function (k) { hooks[k] = window.LAB_HOOKS[k]; });
 
   /* ---------- start ---------- */
   (function () {
-    var m = (location.hash || '').match(/^#(\d+)(?:\.(\d+))?/);
-    if (m) { cur = Math.max(0, Math.min(N - 1, +m[1] - 1)); step = Math.min(maxStep(cur), +(m[2] || 0)); }
+    // Fresh open (new tab, another PC, a bookmark) always starts at slide 1 with every demo reset.
+    // A refresh (F5) in the same tab resumes where you were. ?at=12 or ?at=12.2 jumps (for testing).
+    var m = (location.search.match(/[?&]at=(\d+)(?:\.(\d+))?/) || null), saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem('deck-pos') || 'null'); } catch (e) {}
+    if (m) { cur = +m[1] - 1; step = +(m[2] || 0); }
+    else if (saved && performance.getEntriesByType && (performance.getEntriesByType('navigation')[0] || {}).type === 'reload') { cur = saved[0]; step = saved[1]; }
+    cur = Math.max(0, Math.min(N - 1, cur)); step = Math.min(maxStep(cur), step);
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
     render();
   })();
 })();

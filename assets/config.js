@@ -13,6 +13,14 @@ window.DECK_CONFIG = {
      Paste the live URL here → a real QR code appears automatically. */
   QUEST_URL: 'https://zicapune.github.io/creative-quest/?src=mca_visit_qr',
 
+  /* Admin mode: press M on any slide, enter the code, then ✕ on any photo/video
+     moves it to the Archive (never deleted; restore any time from the Archive button). */
+  ADMIN: {
+    PIN: '1111',
+    SUPABASE_URL: 'https://elrgbounsplqheblmvaa.supabase.co',
+    SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVscmdib3Vuc3BscWhlYmxtdmFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5NTQyNTIsImV4cCI6MjEwODUzMDI1Mn0.UsIiV3Fy1UajAPBcXrLPj3gMpPfck2DuvGZ9FJCNZ_o'
+  },
+
   /* Studio-visits slide: stays hidden until its photos/videos are uploaded to media/visits/… */
   SHOW_VISITS: false,
 

@@ -475,6 +475,55 @@ body.scrubbing, body.scrubbing * { cursor: ew-resize !important; user-select: no
 .vtile figcaption b { display: block; font-size: 36px; font-weight: 750; letter-spacing: -.02em; }
 .vtile figcaption span { font-size: 21px; color: var(--mute); }
 
+/* ---------- Pipeline film ---------- */
+.film-wrap { display: grid; grid-template-columns: 1240px 1fr; gap: 56px; margin-top: 20px; align-items: center; }
+.film-frame { position: relative; width: 1240px; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid var(--line); box-shadow: 0 30px 90px rgba(0,0,0,.55); }
+.film-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.film-frame .film-poster { position: absolute; inset: 0; display: grid; place-items: center; color: var(--mute); font-size: 24px; background: radial-gradient(circle at 50% 50%, #1d2030, #08090c); }
+.film-side .h3 { font-size: 52px; line-height: 1.02; letter-spacing: -.03em; font-weight: 750; }
+.film-side .body { margin-top: 22px; }
+.film-help { margin-top: 26px; max-width: 30ch; }
+.film-out { margin-top: 28px; }
+
+/* ---------- Student carousel ---------- */
+.car { position: relative; margin-top: 40px; height: 680px; overflow: visible; }
+.car-track { position: absolute; left: 0; top: 0; display: flex; gap: 28px; align-items: center; height: 620px; transition: transform .8s var(--ease); will-change: transform; }
+.ct { position: relative; flex: none; height: 600px; width: 1066px; margin: 0; border-radius: 22px; overflow: hidden; background: var(--ink-2); border: 1px solid var(--line);
+  transform: scale(.84); opacity: .38; filter: saturate(.6); transition: transform .8s var(--ease), opacity .8s, filter .8s, box-shadow .8s; cursor: pointer; }
+.ct.on { transform: none; opacity: 1; filter: none; box-shadow: 0 40px 120px rgb(var(--amb, 0 0 0) / .45); }
+.ct img, .ct video { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.ct figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 26px 20px; font-size: 26px; font-weight: 650; background: linear-gradient(transparent, rgba(0,0,0,.7)); opacity: 0; transition: opacity .6s .3s; }
+.ct.on figcaption { opacity: 1; }
+.car-btn { position: absolute; top: 270px; width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--line); background: rgba(13,14,19,.75); color: var(--text); font-size: 40px; line-height: 1; cursor: pointer; z-index: 3; }
+.car-btn.prev { left: -20px; } .car-btn.next { right: -20px; }
+.car-btn:focus-visible { outline: 3px solid var(--act); }
+.car-dots { position: absolute; left: 0; right: 0; top: 640px; display: flex; justify-content: center; gap: 10px; }
+.car-dots i { width: 9px; height: 9px; transform: rotate(45deg); border: 1.5px solid #4a4f66; transition: background .3s, border-color .3s; }
+.car-dots i.on { background: var(--key); border-color: var(--key); }
+#s-wall .open-reel { position: absolute; right: 140px; top: 128px; margin: 0; font-size: 22px; padding: 12px 22px; }
+
+/* ---------- Admin mode ---------- */
+.adm-x { display: none; position: absolute; top: 14px; right: 14px; z-index: 6; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--no); color: #fff; font-size: 22px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+body.admin .adm-x { display: block; }
+.vtile .vmedia { position: relative; }
+.admin-gate { position: absolute; inset: 0; z-index: 70; display: none; place-items: center; background: rgba(5,6,9,.82); }
+.admin-gate.show { display: grid; }
+.admin-gate form { width: 520px; background: var(--ink-2); border: 1px solid var(--line); border-radius: 22px; padding: 40px; }
+.admin-gate input { width: 100%; margin-top: 24px; font: 600 40px var(--mono); letter-spacing: .5em; text-align: center; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--ink); color: var(--text); }
+.admin-gate input:focus { outline: 2px solid var(--key); }
+.admin-gate .err { min-height: 30px; margin-top: 10px; color: var(--no); font-size: 20px; }
+.admin-gate .row { display: flex; gap: 12px; }
+.admin-gate button, .admin-bar button { font: 600 20px var(--display); padding: 12px 22px; border-radius: 12px; border: 1px solid var(--line); background: var(--ink-3); color: var(--text); cursor: pointer; }
+.admin-gate button[type=submit] { background: var(--key); color: var(--ink); border-color: var(--key); }
+.admin-bar { position: absolute; left: 140px; bottom: 100px; z-index: 65; display: none; }
+body.admin .admin-bar { display: block; }
+.admin-bar .toggle { background: var(--no); color: #fff; border-color: var(--no); }
+.admin-bar .panel { display: none; position: absolute; left: 0; bottom: 64px; width: 720px; max-height: 520px; overflow: auto; background: var(--ink-2); border: 1px solid var(--line); border-radius: 18px; padding: 22px 26px; }
+.admin-bar.open .panel { display: block; }
+.admin-bar .arch { list-style: none; margin-top: 12px; }
+.admin-bar .arch li { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--line); font: 18px var(--mono); color: var(--mute); }
+.admin-bar .arch li.none { font-family: var(--display); }
+
 /* overview (press O) */
 body.overview .stage { overflow: auto; }
 .help { position: absolute; inset: 0; z-index: 60; background: rgba(13,14,19,.94); display: none; place-content: center; }

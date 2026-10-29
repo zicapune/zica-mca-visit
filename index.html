@@ -211,6 +211,22 @@
     <aside class="notes">The stages light up one by one on their own. Walk it like a factory line: "a Marvel shot, a game character, a 15-second ad — same line." Then → for the line about code, which leads straight into the Code Lab. (Covers the "Digital production pipelines" point from the proposal.)</aside>
   </section>
 
+  <!-- ============ 5b · PIPELINE FILM (Arijit sir) ============
+       ✏️ To change the video, replace the 11-character id in data-yt="…" (from the YouTube link). -->
+  <section class="slide" id="s-film" data-title="Pipeline film" data-hook="film">
+    <div class="slide-title-tag">Inside a studio pipeline</div>
+    <div class="film-wrap">
+      <div class="film-frame" id="filmFrame" data-yt="5CbG0d_tnSg"></div>
+      <div class="film-side">
+        <div class="h3">The pipeline, in a real production.</div>
+        <p class="body">Presented by Arijit, Senior Faculty, VFX &amp; 3D.</p>
+        <p class="small film-help">Use the player's own controls to play, skip and scrub. Click anywhere on the dark area to give the clicker back to the slides.</p>
+        <a class="open-reel film-out" href="https://youtu.be/5CbG0d_tnSg" target="_blank" rel="noopener">Open on YouTube</a>
+      </div>
+    </div>
+    <aside class="notes">Arijit sir's segment. The video loads the first time this slide opens and pauses itself when you leave. If the frame says "Video unavailable", the owner has blocked embedding: use "Open on YouTube". After clicking inside the player, click the dark area once so the clicker moves slides again.</aside>
+  </section>
+
   <!-- ============ CODE LAB · chapter ============ -->
   <section class="slide floor" id="s-lab" data-title="Code Lab">
     <div class="slide-title-tag">Code Lab</div>
@@ -563,8 +579,19 @@
       <tr><td>Home / End</td><td>First / last slide</td></tr>
       <tr><td>number + Enter</td><td>Jump to slide</td></tr>
       <tr><td>B</td><td>Blackout</td></tr>
+      <tr><td>, / .</td><td>Previous / next in the student carousel</td></tr>
+      <tr><td>M</td><td>Admin mode (code)</td></tr>
       <tr><td>?</td><td>This help</td></tr>
     </table>
+  </div>
+  <div class="admin-gate" id="adminGate" role="dialog" aria-label="Admin mode">
+    <form><div class="h3">Admin mode</div><p class="small">Enter the code to edit media on this deck.</p>
+      <input type="password" inputmode="numeric" maxlength="8" autocomplete="off" aria-label="Admin code">
+      <div class="err"></div><div class="row"><button type="submit">Unlock</button><button type="button" class="cancel">Cancel</button></div></form>
+  </div>
+  <div class="admin-bar" id="adminBar">
+    <button class="toggle">Admin · Archive (<span class="n">0</span>)</button><button class="exit">Exit</button>
+    <div class="panel"><p class="small">Archived items stay in GitHub and are only hidden from the deck. Stored in: <b class="where"></b></p><ul class="arch"></ul></div>
   </div>
   <div class="vignette"></div>
   <div class="grain"></div>
