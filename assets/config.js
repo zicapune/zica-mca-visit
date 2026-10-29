@@ -46,7 +46,7 @@ window.DECK_CONFIG = {
       software: ['Photoshop', 'Premiere Pro & Audition', 'Maya', 'After Effects', 'Nuke', 'SilhouetteFX', '3DEqualizer'] },
     { name: 'Adv. Motion Graphics', tier: 'Program', months: 6, tagline: 'Ads, reels, titles, explainers',
       software: ['Photoshop', 'Illustrator', 'Premiere Pro & Audition', 'After Effects', 'Element 3D'] },
-    { name: 'UI & UX', tier: 'Program', months: 6, tagline: 'Fastest route to freelancing', highlight: true,
+    { name: 'UI & UX', tier: 'Program', months: 6, alt: { months: 12, tier: 'Professional Program' }, tagline: 'Fastest route to freelancing', highlight: true,
       software: ['Photoshop', 'Adobe XD', 'Notion', 'Figma'] }
   ],
 
@@ -56,15 +56,19 @@ window.DECK_CONFIG = {
      from = standard months, to = hybrid months (from Shikha ma'am's offer sheet). Prices in ₹. */
   ASM_OFFER: {
     kicker: 'Hybrid learning · what we recommend for ASM IBMR',
-    title: 'Learn at your campus. And online.',
-    schedule: '2 hours a day · 5 days a week',
-    mode: '2 days on your campus · 3 days live online',
+    title: 'Learn on your campus. And online.',
+    sub: 'Same programs, rebuilt around your MCA timetable.',
+    hours: '2 hrs',
+    week: ['Campus', 'Campus', 'Online', 'Online', 'Online'],   // Mon → Fri
     minBatch: 5,
     rows: [
-      { tier: 'Professional Program', name: 'Game Art & Design',          from: 12, to: 7, mrp: 170000, offer: 120000 },
-      { tier: 'Professional Program', name: 'UI & UX',                    from: 12, to: 7, mrp: 150000, offer: 100000, highlight: true },
-      { tier: 'Professional Program', name: 'Digital Design & Marketing', from: 12, to: 8, mrp: 150000, offer: 100000 },
-      { tier: 'Program',              name: 'UI & UX',                    from: 6,  to: 9, mrp: 65000,  offer: 45000,  highlight: true }
+      { name: 'Game Art & Design', versions: [
+        { tier: 'Professional Program', from: 12, to: 7, mrp: 170000, offer: 120000 } ] },
+      { name: 'UI & UX', highlight: true, versions: [
+        { tier: 'Professional Program', from: 12, to: 9, mrp: 150000, offer: 100000 },
+        { tier: 'Program',              from: 6,  to: 3, mrp: 65000,  offer: 45000 } ] },
+      { name: 'Digital Design & Marketing', versions: [
+        { tier: 'Professional Program', from: 12, to: 8, mrp: 150000, offer: 100000 } ] }
     ]
   },
 
