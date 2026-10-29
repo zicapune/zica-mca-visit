@@ -342,18 +342,15 @@
   </section>
 
   <!-- ============ 6 · CODE EVERYWHERE ============ -->
-  <section class="slide" id="s-tech" data-title="Where code hides">
+  <section class="slide" id="s-tech" data-title="Where code hides" data-hook="tech">
     <div class="slide-title-tag">Where your code fits</div>
     <h2 class="h2">Your degree already has a seat in this industry.</h2>
-    <div class="pairs">
-      <div class="pair"><div class="lang">Python</div><div class="h3">Tools inside Blender and Maya</div><div class="small">One script replaces a day of clicking for 50 artists.</div></div>
-      <div class="pair"><div class="lang">GLSL / HLSL</div><div class="h3">Shaders</div><div class="small">Maths that decides how light hits every surface.</div></div>
-      <div class="pair"><div class="lang">C++ / Blueprints</div><div class="h3">Unreal Engine games</div><div class="small">Gameplay, physics, real-time worlds.</div></div>
-      <div class="pair" data-step="1"><div class="lang">Pipeline scripts</div><div class="h3">Studio automation</div><div class="small">Moving, versioning and rendering thousands of files.</div></div>
-      <div class="pair" data-step="1"><div class="lang">Three.js / WebXR</div><div class="h3">3D and AR in the browser</div><div class="small">Product configurators, virtual try-ons, web experiences.</div></div>
-      <div class="pair" data-step="1"><div class="lang">APIs + AI</div><div class="h3">Generative workflows</div><div class="small">Wiring image and video models into real production.</div></div>
+    <div class="tech">
+      <ol class="tech-list"><li data-k="0"><b>Python</b><span>Tools inside Blender and Maya</span></li><li data-k="1"><b>GLSL / HLSL</b><span>Shaders</span></li><li data-k="2"><b>C++ / Blueprints</b><span>Unreal Engine games</span></li><li data-k="3"><b>Pipeline scripts</b><span>Studio automation</span></li><li data-k="4"><b>Three.js / WebXR</b><span>3D and AR in the browser</span></li><li data-k="5"><b>APIs + AI</b><span>Generative workflows</span></li></ol>
+      <div class="tech-panel"><div class="xp" data-k="0"><div class="xp-vis v-py"></div><div class="xp-txt"><div class="lang">Python</div><div class="h3">Tools inside Blender and Maya</div><p class="body">Studios write Python to automate their software: one script places a thousand trees or renames 5,000 files.</p><p class="small">Every big studio has a "pipeline TD" writing this all day.</p></div></div><div class="xp" data-k="1"><div class="xp-vis v-gl"></div><div class="xp-txt"><div class="lang">GLSL / HLSL</div><div class="h3">Shaders</div><p class="body">Tiny programs that run on the graphics card for every pixel, every frame. GLSL is OpenGL's shading language; HLSL is Microsoft DirectX's.</p><p class="small">Every glow, water surface and skin tone in a game is a shader.</p></div></div><div class="xp" data-k="2"><div class="xp-vis v-bp"></div><div class="xp-txt"><div class="lang">C++ / Blueprints</div><div class="h3">Unreal Engine games</div><p class="body">Unreal is written in C++. Blueprints are its visual scripting: the same logic as code, wired as boxes.</p><p class="small">Our Game Art students build gameplay with Blueprints.</p></div></div><div class="xp" data-k="3"><div class="xp-vis v-pipe"></div><div class="xp-txt"><div class="lang">Pipeline scripts</div><div class="h3">Studio automation</div><p class="body">Code that moves every asset from department to department, versions it (v001, v002…) and sends it to the render farm.</p><p class="small">Without it, a 2-hour film is chaos.</p></div></div><div class="xp" data-k="4"><div class="xp-vis v-three"></div><div class="xp-txt"><div class="lang">Three.js / WebXR</div><div class="h3">3D and AR in the browser</div><p class="body">JavaScript libraries that put real-time 3D and augmented reality on a web page. No app to install.</p><p class="small">Product configurators, virtual try-ons, museum tours.</p></div></div><div class="xp" data-k="5"><div class="xp-vis v-ai"></div><div class="xp-txt"><div class="lang">APIs + AI</div><div class="h3">Generative workflows</div><p class="body">Calling image, video and voice models from code, and wiring them into real production.</p><p class="small">The fastest-growing job in studios right now.</p></div></div></div>
     </div>
-    <aside class="notes">(Covers "Technology integration in creative industries".) Row 1 shows first, click for row 2. Don't read the cards. Pick one per row and give a 10-second example. AR/VR lives in the Three.js/WebXR card.</aside>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i><i data-step="4" class="fade"></i><i data-step="5" class="fade"></i>
+    <aside class="notes">(Covers "Technology integration in creative industries".) Six clicks, one language each; the right panel animates what it does. Keep each to about 15 seconds: name it, say what it does, give the one example on screen. GLSL = OpenGL Shading Language, HLSL = High-Level Shading Language (DirectX).</aside>
   </section>
 
   <!-- ============ 7a · 50 MILLISECONDS (lead-in to UI/UX) ============ -->
@@ -436,6 +433,18 @@
     <aside class="notes">The pitch: MCA + UI/UX = the person who can design AND build the screen. The Figma module ends with "integrating Figma with developer tools", which is where their coding pays off. The 12-month Professional Program adds Illustrator, Miro, FigJam and Framer. Next slide shows what that pays. If asked about jobs: ASM IBMR's MCA average is ₹4 LPA (highest ₹8 LPA), and fresher UI/UX jobs are about ₹2.5–4 LPA, so sell UI/UX as a side income plus a stronger developer profile, not as a replacement job.</aside>
   </section>
 
+  <!-- ============ CAREER GROWTH (salary, India + abroad) ============ -->
+  <section class="slide" id="s-growth" data-title="Start here, grow here" data-hook="growth">
+    <div class="slide-title-tag">The money · a job</div>
+    <h2 class="h2">Start here. Grow to here.</h2>
+    <div class="growth">
+      <svg id="growthSvg" viewBox="0 0 1640 640" aria-label="Typical yearly salary in India by years of experience for UI/UX, motion graphics, 3D and game art, and VFX"></svg>
+    </div>
+    <p class="src">India: middle of the salary range reported on AmbitionBox (2025) for UI/UX Designer, Senior UI UX Designer, Senior Motion Graphic Designer, 3D Artist and FX Artist; motion start from Payscale (2023). Abroad: US median, BLS OEWS May 2025; ₹ at about ₹94 per $.</p>
+    <aside class="notes">Lines draw by themselves: typical yearly salary in India at the start, after 5 years and after 10 years, for each track. Point at UI/UX (the gold line): it climbs fastest. Click once: the abroad column shows US medians (about ₹98 lakh for UI/UX, ₹96 lakh for animation and VFX). Say: "Same skills, same software. Where you take them is up to you." Be honest if asked: these are middles of wide ranges; portfolio and city change everything.</aside>
+    <i data-step="1" class="fade"></i>
+  </section>
+
   <!-- ============ 10 · RATES ============ -->
   <section class="slide" id="s-rates" data-title="What it pays per hour">
     <div class="slide-title-tag">The money</div>
@@ -454,22 +463,28 @@
   <section class="slide" id="s-tags" data-title="What one project pays">
     <div class="slide-title-tag">The money</div>
     <h2 class="h2">Or price it per project.</h2>
-    <div class="tags">
-      <div class="tagc uiux"><div class="what">One landing page</div><div class="price">₹40K–1.2L</div><div class="per">Design, India</div></div>
-      <div class="tagc uiux"><div class="what">One app screen</div><div class="price">₹3K–25K</div><div class="per">Per screen, freelance, India</div></div>
-      <div class="tagc uiux"><div class="what">App MVP design</div><div class="price">₹60K–3L</div><div class="per">Whole app, first version</div></div>
-      <div class="tagc" data-step="1"><div class="what">Stylised 3D game character</div><div class="price">$360–8,400</div><div class="per">Per character, 3–7 days</div></div>
-      <div class="tagc" data-step="1"><div class="what">Motion designer on Upwork</div><div class="price">$18–35/hr</div><div class="per">Median rate</div></div>
-      <div class="tagc" data-step="1"><div class="what">Simple 3D game prop</div><div class="price">$120–2,400</div><div class="per">Per prop</div></div>
+    <div class="tags2">
+      <div class="tagx"><div class="mock m-land"><i class="nav"></i><i class="hero"></i><i class="cta"></i><i class="row"></i><i class="row s"></i><i class="cards"><b></b><b></b><b></b></i></div>
+        <div class="what">One landing page</div><div class="price">₹40K–1.2L</div><div class="per">A product's home page, designed</div></div>
+      <div class="tagx"><div class="mock m-screen"><div class="ph"><i class="top"></i><i class="card"></i><i class="l"></i><i class="l s"></i><i class="btn"></i></div></div>
+        <div class="what">One app screen</div><div class="price">₹3K–25K</div><div class="per">Per screen, freelance</div></div>
+      <div class="tagx"><div class="mock m-mvp"><div class="ph a"><i></i><i></i><i></i></div><div class="ph b"><i></i><i></i><i></i></div><div class="ph c"><i></i><i></i><i></i></div><svg viewBox="0 0 300 120"><path d="M88 60 H120 M180 60 H212"/></svg></div>
+        <div class="what">A whole app, first version</div><div class="price">₹60K–3L</div><div class="per">MVP design: every screen + flow</div></div>
+    </div>
+    <div class="strip" data-step="1">
+      <div class="si"><span class="ico ico-cube"><i></i></span><div><div class="what">Simple 3D game prop</div><div class="price">$120–2,400</div></div></div>
+      <div class="si"><span class="ico ico-char"><i></i></span><div><div class="what">Stylised game character</div><div class="price">$360–8,400</div></div></div>
+      <div class="si"><span class="ico ico-wave"><i></i><i></i><i></i><i></i></span><div><div class="what">Motion designer, Upwork median</div><div class="price">$18–35/hr</div></div></div>
     </div>
     <p class="src">Sources: Zethic (2026), Pen on Paper / DigiFlute (2026), RocketBrush (May 2025), LottieFiles / Upwork</p>
-    <aside class="notes">Top row = UI/UX (the hero) shows straight away; click for the bottom row = game art and motion, so the other tracks aren't left out. Line: "One landing page a month pays more than most internships."</aside>
+    <aside class="notes">Top row = UI/UX: each card shows what the job looks like (a landing page scrolling, a single app screen building itself, a whole app's screens linked). Click for the strip of game-art and motion prices, so the other tracks aren't left out. Line: "One landing page a month pays more than most internships."</aside>
   </section>
 
   <!-- ============ 12 · CALCULATOR ============ -->
   <section class="slide" id="s-calc" data-title="Do the math" data-hook="calc">
     <div class="slide-title-tag">Do the math</div>
     <h2 class="h2">Weekends only. Do the math.</h2>
+    <div class="roles-pick" id="rolePick"></div>
     <div class="calc">
       <div>
         <div class="ctrl"><div class="row"><span class="lab">Hours a week</span><span class="val" id="hVal">10</span></div><input type="range" id="hours" aria-label="Hours a week"></div>
@@ -479,10 +494,11 @@
         <div class="small">A month</div>
         <div class="month" id="mVal">₹52,000</div>
         <div class="year" id="yVal">₹6.2 lakh a year</div>
-        <div class="fine">Hours × rate × 4.33 weeks. Rate range from the Indian freelance rate card on the earlier slide.</div>
+        <div class="fine" id="calcFine">Hours × rate × 4.33 weeks.</div>
       </div>
     </div>
-    <aside class="notes">Interactive. Click a slider, then use ← → keys or drag (the deck ignores arrow keys while a slider is focused; click empty space to give arrows back to the deck). Ask a student to call out hours. Push the rate to ₹3,000 for the gasp.</aside>
+    <i data-step="1" class="fade"></i><i data-step="2" class="fade"></i><i data-step="3" class="fade"></i>
+    <aside class="notes">Pick a role with the chips (or the clicker steps through UI/UX → Motion → 3D → Graphic). The rate range changes to that role's real Indian freelance range. Click a slider, then use ← → keys or drag (the deck ignores arrow keys while a slider is focused; click empty space to give arrows back to the deck). Ask a student to call out hours. Push the rate to ₹3,000 for the gasp.</aside>
   </section>
 
   <!-- ============ 13 · CAREERS ============ -->

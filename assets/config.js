@@ -63,5 +63,13 @@ window.DECK_CONFIG = {
   ],
 
   /* Side-hustle calculator defaults (₹/hr range from the Xflow 2026 rate card). */
-  CALC: { hours: 10, rate: 1200, rateMin: 800, rateMax: 4000, hoursMax: 30 }
+  CALC: { hours: 10, rate: 1200, rateMin: 800, rateMax: 4000, hoursMax: 30,
+    /* One chip per role; the clicker also steps through them in this order.
+       Sources: Xflow India rate card 2026 (UI/UX, graphic, video); RocketBrush 2025 India 3D rates ($15–50/hr at ₹94 per $). */
+    ROLES: [
+      { name: 'UI/UX design',        min: 800,  max: 4000, start: 1200 },
+      { name: 'Motion & video',      min: 500,  max: 3000, start: 1000 },
+      { name: '3D & game art',       min: 1400, max: 4700, start: 1800 },
+      { name: 'Graphic design',      min: 700,  max: 3000, start: 1000 }
+    ] }
 };

@@ -473,9 +473,12 @@
       enter: function () {
         if (built) return; built = true;
         var c = (CFG.COURSES || []).filter(function (x) { return x.highlight; })[0];
-        if (c) $('#uiuxTools').innerHTML = c.software.map(function (s) { return '<span class="tool">' + s + '</span>'; }).join('');
+        var ROLE = { 'Photoshop': 'edit images', 'Adobe XD': 'first prototypes', 'Notion': 'research & docs', 'Figma': 'design systems',
+                     'Illustrator': 'icons & vectors', 'Miro': 'research board', 'FigJam': 'team brainstorms', 'Framer': 'live websites' };
+        function chip(s, up) { return '<span class="tool tool2' + (up ? ' up' : '') + '"><b>' + s + '</b><small>' + (ROLE[s] || '') + '</small></span>'; }
+        if (c) $('#uiuxTools').innerHTML = c.software.map(function (s) { return chip(s); }).join('');
         var up = CFG.UIUX_UPGRADE;
-        if (up && up.adds && up.adds.length) $('#uiuxUp').innerHTML = '<span class="up-l">The ' + up.months + '-month Professional Program adds</span>' + up.adds.map(function (s) { return '<span class="tool up">' + s + '</span>'; }).join('');
+        if (up && up.adds && up.adds.length) $('#uiuxUp').innerHTML = '<span class="up-l">The ' + up.months + '-month Professional Program adds</span>' + up.adds.map(function (s) { return chip(s, true); }).join('');
         $('#ships').innerHTML = (CFG.UIUX_SHIPS || []).map(function (s, i) { return '<li style="--i:' + i + '">' + ICON_Y + s + '</li>'; }).join('');
         render();
       }
@@ -484,7 +487,8 @@
 
   /* ---- 12 · side-hustle calculator ---- */
   hooks.calc = (function () {
-    var init = false;
+    var init = false, role = 0;
+    var C = CFG.CALC || {}, ROLES = C.ROLES || [{ name: 'UI/UX design', min: C.rateMin || 800, max: C.rateMax || 4000, start: C.rate || 1200 }];
     function inr(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
     function lakh(n) { return n >= 100000 ? '₹' + (n / 100000).toFixed(1).replace(/\.0$/, '') + ' lakh a year' : inr(n) + ' a year'; }
     function upd() {
@@ -494,16 +498,25 @@
       $('#mVal').textContent = inr(Math.round(m / 100) * 100);
       $('#yVal').textContent = lakh(m * 12);
     }
+    function pick(i) {
+      role = Math.max(0, Math.min(ROLES.length - 1, i));
+      var R = ROLES[role], r = $('#rate');
+      r.min = R.min; r.max = R.max; r.step = 100; r.value = R.start;
+      $$('#rolePick button').forEach(function (b, k) { b.classList.toggle('on', k === role); });
+      $('#calcFine').textContent = 'Hours × rate × 4.33 weeks. ' + R.name + ' in India: ' + inr(R.min) + '–' + inr(R.max) + ' an hour.';
+      upd();
+    }
     return {
       enter: function () {
         if (init) return; init = true;
-        var C = CFG.CALC || {};
-        var h = $('#hours'), r = $('#rate');
+        var h = $('#hours');
         h.min = 2; h.max = C.hoursMax || 30; h.step = 1; h.value = C.hours || 10;
-        r.min = C.rateMin || 800; r.max = C.rateMax || 4000; r.step = 100; r.value = C.rate || 1200;
-        h.addEventListener('input', upd); r.addEventListener('input', upd);
-        upd();
-      }
+        $('#rolePick').innerHTML = ROLES.map(function (R, i) { return '<button data-r="' + i + '">' + R.name + '</button>'; }).join('');
+        $$('#rolePick button').forEach(function (b) { b.onclick = function () { pick(+b.getAttribute('data-r')); }; });
+        h.addEventListener('input', upd); $('#rate').addEventListener('input', upd);
+        pick(0);
+      },
+      step: function (s, st) { if (init) pick(st); }
     };
   })();
 
@@ -788,6 +801,80 @@
         })(performance.now());
       },
       leave: function () { cancelAnimationFrame(raf); }
+    };
+  })();
+
+  /* ---- Career growth: India salary by experience, then the abroad column ---- */
+  hooks.growth = (function () {
+    var built = false;
+    var X = [0, 5, 10], XL = ['Start', '5 years', '10 years'];
+    var SERIES = [
+      { name: '3D & game art', col: '#5ce1e6', v: [3.2, 6.2, 8.1], note: '7 yrs' },
+      { name: 'VFX', col: '#8d93a8', v: [2.9, 4.5, 6.8], note: '8 yrs' },
+      { name: 'Motion graphics', col: '#ff7a1a', v: [3.4, 8.1, 15.7] },
+      { name: 'UI/UX', col: '#ffb547', v: [4.6, 11.5, 17.4], hi: true }
+    ];
+    function build(svg) {
+      var L = 90, R = 1180, T = 30, B = 560, MAX = 20;
+      function px(i) { return L + (R - L) * X[i] / 10; }
+      function py(v) { return B - (B - T) * v / MAX; }
+      var h = '<g class="grid">';
+      [0, 5, 10, 15, 20].forEach(function (v) { h += '<line x1="' + L + '" x2="' + R + '" y1="' + py(v) + '" y2="' + py(v) + '"/><text x="' + (L - 16) + '" y="' + (py(v) + 7) + '" text-anchor="end">₹' + v + 'L</text>'; });
+      h += '</g>';
+      XL.forEach(function (t, i) { h += '<text class="xl" x="' + px(i) + '" y="' + (B + 40) + '" text-anchor="middle">' + t + '</text>'; });
+      // end-label positions, pushed apart so they never overlap
+      var ly = SERIES.map(function (S, k) { return { k: k, y: py(S.v[2]) }; }).sort(function (a, b) { return a.y - b.y; });
+      for (var q = 1; q < ly.length; q++) if (ly[q].y - ly[q - 1].y < 62) ly[q].y = ly[q - 1].y + 62;
+      var LY = []; ly.forEach(function (o) { LY[o.k] = o.y; });
+      SERIES.forEach(function (S, k) {
+        var d = S.v.map(function (v, i) { return (i ? 'L' : 'M') + px(i) + ' ' + py(v); }).join(' ');
+        h += '<path class="ln" d="' + d + '" stroke="' + S.col + '" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1) ' + (0.3 + k * 0.45) + 's"/>';
+        S.v.forEach(function (v, i) {
+          h += '<circle class="pt" cx="' + px(i) + '" cy="' + py(v) + '" r="' + (S.hi ? 10 : 8) + '" fill="' + S.col + '" style="opacity:0;transition:opacity .4s ' + (0.5 + k * 0.45 + i * 0.35) + 's"/>';
+        });
+        var last = S.v[2];
+        h += '<g style="opacity:0;transition:opacity .5s ' + (1.4 + k * 0.45) + 's" class="endlab"><text class="lab" x="' + (R + 22) + '" y="' + (LY[k] + 2) + '" fill="' + S.col + '">' + S.name + '</text>' +
+          '<text class="val" x="' + (R + 22) + '" y="' + (LY[k] + 30) + '">₹' + last + ' lakh' + (S.note ? ' <tspan fill="#5f6579" font-size="17">(' + S.note + ')</tspan>' : '') + '</text></g>';
+      });
+      h += '<g class="abroad"><line x1="1450" x2="1450" y1="' + T + '" y2="' + B + '" stroke="#2b2f42" stroke-dasharray="6 8"/>' +
+        '<text class="sm" x="1480" y="' + (T + 20) + '">Abroad: US median</text>' +
+        '<text class="big" x="1480" y="' + (T + 110) + '" fill="#ffb547">₹98 L</text><text class="sm" x="1480" y="' + (T + 142) + '">UI/UX · $104k a year</text>' +
+        '<text class="big" x="1480" y="' + (T + 250) + '" fill="#5ce1e6">₹96 L</text><text class="sm" x="1480" y="' + (T + 282) + '">Animation &amp; VFX · $102k a year</text></g>';
+      svg.innerHTML = h;
+    }
+    return {
+      enter: function (s) {
+        var svg = s.querySelector('#growthSvg');
+        if (!built) { build(svg); built = true; }
+        svg.getBoundingClientRect();
+        requestAnimationFrame(function () {
+          $$('.ln', svg).forEach(function (p) { p.style.strokeDashoffset = 0; });
+          $$('.pt, .endlab', svg).forEach(function (p) { p.style.opacity = 1; });
+        });
+      },
+      step: function (s, st) { var svg = s.querySelector('#growthSvg'); if (svg) svg.classList.toggle('abroad-on', st >= 1); }
+    };
+  })();
+
+  /* ---- Where your code fits: one language per click, animated explainer ---- */
+  hooks.tech = (function () {
+    var built = false;
+    function build(s) {
+      var py = s.querySelector('.v-py'); py.innerHTML = Array.from({ length: 70 }, function (_, i) { return '<b style="--i:' + i + '"></b>'; }).join('');
+      s.querySelector('.v-bp').innerHTML = '<i>Event: Begin Play</i><i>Spawn Actor</i><i>Play Sound</i><u></u><u></u><em></em>';
+      s.querySelector('.v-pipe').innerHTML = '<span>model</span><span>texture</span><span>render</span><span>comp</span><b>robot_v003.fbx</b>';
+      s.querySelector('.v-three').innerHTML = '<div class="cube"><i></i><i></i><i></i><i></i><i></i><i></i></div>';
+      var G = [['#ff7a1a', '#8b5cf6'], ['#5ce1e6', '#1d4ed8'], ['#ffb547', '#ef4444'], ['#22c55e', '#0ea5e9']];
+      s.querySelector('.v-ai').innerHTML = '<div class="prompt">generate("a neon city at dusk, 4 variations")</div><div class="tiles">' +
+        G.map(function (g, i) { return '<b style="--i:' + i + ';--a:' + g[0] + ';--b:' + g[1] + '"></b>'; }).join('') + '</div>';
+    }
+    return {
+      enter: function (s) { if (!built) { build(s); built = true; } },
+      step: function (s, st) {
+        if (!built) { build(s); built = true; }
+        $$('.tech-list li', s).forEach(function (li, k) { li.classList.toggle('on', k === st); li.classList.toggle('done', k < st); });
+        $$('.xp', s).forEach(function (x, k) { x.classList.toggle('on', k === st); });
+      }
     };
   })();
 
