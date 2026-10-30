@@ -3,6 +3,8 @@
 Tested on **Blender 5.2.3 LTS** (works on 4.4 and newer). Everything is procedural: no downloads, no internet.
 For Blender 4.2 use the older `zica_world_builder_v1_blender4.py`.
 
+**New: [ZICA Image to 3D](zica_image_to_3d/README.md)**: a separate add-on (`zica_image_to_3d.zip`) that turns a photo or 2D art into an orbitable 3D scene, step by step with viewport pop-ups. 10 sample pictures included.
+
 ## The scripts
 | Script | Purpose | Inside |
 |---|---|---|
