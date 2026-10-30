@@ -1019,3 +1019,25 @@ body.admin .adm-mv { display: grid; place-items: center; }
 .demo-tools { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 40px; position: relative; z-index: 2; }
 .demo-tools .sl-btn { margin: 0; text-decoration: none; }
 .demo-hint { flex-basis: 100%; font: 500 18px var(--mono); color: var(--mute); margin-top: 6px; }
+
+/* demo slide: script library */
+#s-demo { padding-top: 96px; }
+#s-demo .demo-h { font-size: 72px; margin-top: 12px; }
+.demo-sub { font-size: 22px; color: var(--mute); margin-top: 10px; }
+.lib { display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr 1fr; gap: 14px; margin-top: 26px; position: relative; z-index: 2; }
+.lib-card { display: flex; flex-direction: column; background: rgba(21,23,31,.94); border: 1px solid var(--line); min-width: 0;
+  opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .6s var(--ease); }
+.slide.active .lib-card { opacity: 1; transform: none; transition-delay: calc(.15s + var(--i) * 90ms); }
+.lib-card.hero { border-color: rgba(255,181,71,.7); box-shadow: 0 0 0 1px rgba(255,181,71,.2), 0 20px 60px rgba(0,0,0,.4); }
+.lib-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-bottom: 1px solid var(--line); }
+.lib-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
+.lib-card .sc-k { font: 600 13px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--key); }
+.lib-card b { display: block; font-size: 23px; font-weight: 750; line-height: 1.1; margin-top: 4px; }
+.lib-card p { font-size: 16px; color: var(--mute); line-height: 1.35; margin-top: 6px; }
+.lib-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.lib-tags span { font: 500 12px var(--mono); color: #b9bdcb; border: 1px solid #3a3f55; padding: 2px 6px; }
+.lib-card .sc-btns { display: flex; flex-direction: column; gap: 6px; margin-top: auto; padding-top: 12px; }
+.lib-card .sc-btns .sl-btn { margin: 0; text-decoration: none; font-size: 15px; padding: 8px 10px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lib-card .sc-btns a.sl-btn { font-family: var(--mono); font-size: 12px; color: var(--mute); }
+#s-demo .demo-hint { display: block; margin-top: 16px; position: relative; z-index: 2; font-size: 16px; }
+#s-demo .demo-hint a { color: var(--key); }

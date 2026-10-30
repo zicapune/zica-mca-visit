@@ -1062,16 +1062,15 @@
   })();
 
 
-  /* ---- Blender demo: copy the World Builder script ---- */
-  (function () {
-    var b = $('#copyWB'); if (!b) return;
+  /* ---- Blender demo: copy any script in the library ---- */
+  $$('.copy-py').forEach(function (b) {
     b.addEventListener('click', function () {
-      fetch('blender/zica_world_builder.py', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
-        return navigator.clipboard.writeText(t);
-      }).then(function () { b.textContent = 'Copied ✓ now paste in Blender'; b.classList.add('on'); setTimeout(function () { b.textContent = 'Copy World Builder script'; b.classList.remove('on'); }, 4000); })
-        .catch(function () { b.textContent = 'Copy failed: use Download .py'; });
+      var label = b.textContent;
+      fetch(b.dataset.src, { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) { return navigator.clipboard.writeText(t); })
+        .then(function () { b.textContent = 'Copied ✓ paste in Blender'; b.classList.add('on'); setTimeout(function () { b.textContent = label; b.classList.remove('on'); }, 4000); })
+        .catch(function () { b.textContent = 'Copy failed: use the .py link'; });
     });
-  })();
+  });
 
   /* ---- The life you can get: Zynga video ---- */
   hooks.studiolife = (function () {
