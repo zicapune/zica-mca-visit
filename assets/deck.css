@@ -934,3 +934,17 @@ body.admin .adm-mv { display: grid; place-items: center; }
 .mv-menu button { text-align: left; font: 500 17px var(--display); color: var(--text); background: transparent; border: 0; padding: 8px 10px; cursor: pointer; }
 .mv-menu button:hover { background: rgba(255,181,71,.15); }
 .car-dots { display: none; }
+
+/* ---------- Alumni ---------- */
+.alumni { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 54px; }
+.al { margin: 0; display: grid; grid-template-columns: 168px 1fr; gap: 20px; align-items: stretch; background: var(--ink-2); border: 1px solid var(--line); padding: 14px; position: relative;
+  opacity: 0; transform: translateY(24px); transition: opacity .5s, transform .6s var(--ease); }
+.slide.active .al { opacity: 1; transform: none; transition-delay: calc(.2s + var(--i) * 110ms); }
+.al img { width: 168px; height: 216px; object-fit: cover; display: block; filter: saturate(.92); }
+.al figcaption { display: flex; flex-direction: column; min-width: 0; }
+.al b { font-size: 26px; font-weight: 750; letter-spacing: -.02em; line-height: 1.1; }
+.al span { font-size: 17px; color: var(--mute); margin-top: 6px; line-height: 1.25; }
+.al em { font-style: normal; font-size: 17px; color: var(--text); margin-top: 4px; line-height: 1.25; }
+.al strong { margin-top: auto; font-size: 40px; font-weight: 800; letter-spacing: -.03em; color: var(--key); line-height: 1; }
+.al:nth-child(-n+2) { border-color: rgba(255,181,71,.6); background: linear-gradient(180deg, rgba(255,181,71,.10), var(--ink-2) 60%); }
+.al:nth-child(-n+2) strong { font-size: 48px; text-shadow: 0 0 30px rgba(255,181,71,.35); }
