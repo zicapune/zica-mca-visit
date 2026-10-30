@@ -997,3 +997,8 @@ body.admin .adm-mv { display: grid; place-items: center; }
 .vc button { font-size: 15px; padding: 3px 5px; }
 .vc .v-sp { min-width: 40px; }
 .vc > * { flex: none; } .vc .v-seek { flex: 1 1 auto; min-width: 40px; width: 0; }
+
+/* timeline keyframes are clickable */
+.tl-key { cursor: pointer; }
+.tl-key::after { content: ''; position: absolute; inset: -9px; }
+.tl-key:hover { border-color: var(--act, #5ce1e6); }
