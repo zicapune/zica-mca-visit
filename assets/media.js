@@ -64,6 +64,12 @@
       if (VIDEO.test(n)) out.push({ kind: 'video', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), by: credit(n), sort: n });
       else if (IMAGE.test(n)) out.push({ kind: 'image', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), by: credit(n), sort: n });
     });
+    if (names.indexOf('captions.json') !== -1) {
+      try {
+        var cap = await (await fetch(folder + '/captions.json', { cache: 'no-store' })).json();
+        out.forEach(function (it) { var k = it.path.split('/').pop(), c = cap[k]; if (c) { if (c.title) it.title = c.title; if ('by' in c) it.by = c.by; } });
+      } catch (e) {}
+    }
     if (names.indexOf('youtube.txt') !== -1) {
       try {
         var t = await (await fetch(folder + '/youtube.txt', { cache: 'no-store' })).text();

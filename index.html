@@ -7,7 +7,7 @@
 <meta name="description" content="ZICA Pune — industrial visit deck for ASM IBMR MCA students">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 10-9 10-9-10z' fill='%23ffb547'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/deck.css?v=202610300112">
+<link rel="stylesheet" href="assets/deck.css?v=202610300440">
 </head>
 <body>
 <div class="stage" id="stage">
@@ -636,6 +636,22 @@
     <aside class="notes">Real photos from ZICA Pune. Three clicks. 1 Studio visits: "We take students into working studios: you see a real pipeline, real people, real deadlines." Name the studios you visited. 2 Expert talks: "Founders and directors come to us: Deven Oza, Punit Sharma and others." 3 Masterclasses: "Manan Desai, a lead compositor at Industrial Light &amp; Magic, the studio George Lucas founded, taught our students the VFX pipeline. Producer Suraj Singh on film-making, Siddharth Vasudeva on creating animated IP." Bottom line: "And every term: Masterstroke, Electric Saturday, competitions, live projects and the War Room."</aside>
   </section>
 
+  <!-- ============ THE LIFE YOU CAN GET (Zynga) ============ -->
+  <section class="slide" id="s-studio-life" data-title="The life you can get" data-hook="studiolife">
+    <div class="slide-title-tag">Where this leads</div>
+    <h2 class="h2">The life you can get.</h2>
+    <div class="sl-wrap">
+      <video id="slVideo" src="media/life/zynga-india-studio.mp4" poster="media/life/zynga-poster.jpg" controls muted playsinline preload="metadata"></video>
+      <div class="sl-side">
+        <div class="sl-k">Inside Zynga's India studio</div>
+        <p>One of the world's biggest mobile-game makers. This is what a creative studio office looks like.</p>
+        <button class="sl-btn" id="slSpeed">1× speed</button>
+        <button class="sl-btn" id="slSound">🔇 Sound off</button>
+      </div>
+    </div>
+    <aside class="notes">Zynga India studio tour, about 1.5 minutes. Click play on the video (it starts muted; use the Sound button). The 2× button speeds it up if you're short of time. Line: "This is where a portfolio takes you. Game studios, VFX houses, design teams, all hiring people who can both create and code."</aside>
+  </section>
+
   <section class="slide" id="s-visits" data-title="Studio visits" data-hook="visits" data-show-if="SHOW_VISITS">
     <div class="slide-title-tag">Industry exposure</div>
     <h2 class="h2">We take you inside real studios.</h2>
@@ -653,7 +669,13 @@
     <div class="live"><i></i>Live</div>
     <h1 class="h-mega">Enough slides. Let's make Python build a world.</h1>
     <p class="lead" style="margin-top:40px">Blender, one script, a few seconds.</p>
-    <aside class="notes">Alt+Tab to Blender (zica-demo.blend, World Builder already run; N → ZICA tab). Click Neon City: "Each building is one loop iteration." Then Island Lagoon: "The noise demo, now in 3D with real water." If time: Image → World with a student's photo. Z → Rendered for the glow, Space to play the camera. Come back and press → for the Creative Quest.</aside>
+    <div class="demo-tools">
+      <button class="sl-btn" id="copyWB">Copy World Builder script</button>
+      <a class="sl-btn" href="blender/zica_world_builder.py" download="zica_world_builder.py">Download .py</a>
+      <a class="sl-btn" href="https://github.com/zicapune/zica-mca-visit/blob/main/blender/README.md" target="_blank" rel="noopener">How to use</a>
+      <span class="demo-hint" id="copyMsg">Blender → Scripting → New → Ctrl+V → Run Script (Alt+P) → back to Layout → N → ZICA tab</span>
+    </div>
+    <aside class="notes">PREP: click "Copy World Builder script", then in Blender: Scripting tab → New → Ctrl+V → Run Script (Alt+P). Go back to Layout, hover the 3D view, press N, open the ZICA tab. Click "Fast preview (EEVEE)" first on this PC, then Neon City or Island Lagoon. Tested on Blender 4.2 LTS; 4.5 LTS should also work; on Blender 5.x some buttons may fail. Alt+Tab to Blender (zica-demo.blend, World Builder already run; N → ZICA tab). Click Neon City: "Each building is one loop iteration." Then Island Lagoon: "The noise demo, now in 3D with real water." If time: Image → World with a student's photo. Z → Rendered for the glow, Space to play the camera. Come back and press → for the Creative Quest.</aside>
   </section>
 
   <!-- ============ 17 · QUEST ============ -->
@@ -710,10 +732,10 @@
   <div class="grain"></div>
 </div>
 
-<script src="assets/config.js?v=202610300112"></script>
-<script src="assets/media.js?v=202610300112"></script>
+<script src="assets/config.js?v=202610300440"></script>
+<script src="assets/media.js?v=202610300440"></script>
 <script src="assets/vendor/qrcode.js"></script>
-<script src="assets/lab.js?v=202610300112"></script>
-<script src="assets/deck.js?v=202610300112"></script>
+<script src="assets/lab.js?v=202610300440"></script>
+<script src="assets/deck.js?v=202610300440"></script>
 </body>
 </html>

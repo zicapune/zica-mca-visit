@@ -85,7 +85,8 @@ window.DECK_CONFIG = {
     { dir: 'media/work/branding',       name: 'Branding & packaging' },
     { dir: 'media/work/illustration',   name: 'Illustration & game art' },
     { dir: 'media/work/matte-painting', name: 'Matte painting' },
-    { dir: 'media/reel',                name: 'Reels & films' }
+    { dir: 'media/work/motion-graphics', name: 'Motion graphics' },
+    { dir: 'media/work/visits',         name: 'Studio visits & workshops' }
   ],
 
   /* UI/UX spotlight: the 12-month Professional Program adds these on top of the 6-month tools. */

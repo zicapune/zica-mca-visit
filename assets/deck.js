@@ -1062,6 +1062,30 @@
   })();
 
 
+  /* ---- Blender demo: copy the World Builder script ---- */
+  (function () {
+    var b = $('#copyWB'); if (!b) return;
+    b.addEventListener('click', function () {
+      fetch('blender/zica_world_builder.py', { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (t) {
+        return navigator.clipboard.writeText(t);
+      }).then(function () { b.textContent = 'Copied ✓ now paste in Blender'; b.classList.add('on'); setTimeout(function () { b.textContent = 'Copy World Builder script'; b.classList.remove('on'); }, 4000); })
+        .catch(function () { b.textContent = 'Copy failed: use Download .py'; });
+    });
+  })();
+
+  /* ---- The life you can get: Zynga video ---- */
+  hooks.studiolife = (function () {
+    var wired = false;
+    return {
+      enter: function () {
+        var v = $('#slVideo'); if (wired) return; wired = true;
+        $('#slSpeed').onclick = function () { v.playbackRate = v.playbackRate === 1 ? 2 : 1; this.textContent = v.playbackRate + '× speed'; this.classList.toggle('on', v.playbackRate !== 1); };
+        $('#slSound').onclick = function () { v.muted = !v.muted; this.textContent = v.muted ? '🔇 Sound off' : '🔊 Sound on'; this.classList.toggle('on', !v.muted); };
+      },
+      leave: function () { var v = $('#slVideo'); if (v) v.pause(); }
+    };
+  })();
+
   /* ---- Life at ZICA: one set of real photos per click ---- */
   hooks.life = {
     step: function (s, st) {

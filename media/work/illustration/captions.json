@@ -1,0 +1,46 @@
+{
+ "01-digital-painting.jpg": {
+  "title": "Digital painting",
+  "by": "by Rushikesh Thorat"
+ },
+ "02-midnight-vinyl.jpg": {
+  "title": "Midnight vinyl",
+  "by": "by Sharvari Shinde"
+ },
+ "03-midnight-vinyl-2d-animation.mp4": {
+  "title": "Midnight vinyl, 2D animation",
+  "by": "by Sharvari Shinde"
+ },
+ "04-boat-on-the-lily-pond.jpg": {
+  "title": "Boat on the lily pond",
+  "by": ""
+ },
+ "05-forest-silhouette.jpg": {
+  "title": "Forest silhouette",
+  "by": ""
+ },
+ "06-beyond-reality-poster.jpg": {
+  "title": "Beyond Reality poster",
+  "by": ""
+ },
+ "07-savitri-landscape-poster.jpg": {
+  "title": "Savitri landscape poster",
+  "by": ""
+ },
+ "08-game-prop-cheese.jpg": {
+  "title": "Game prop: cheese",
+  "by": ""
+ },
+ "09-game-prop-tombstone.jpg": {
+  "title": "Game prop: tombstone",
+  "by": ""
+ },
+ "10-pencil-drawing-time-lapse.mp4": {
+  "title": "Pencil drawing, time-lapse",
+  "by": "Hand-drawn"
+ },
+ "11-ganesha-drawing-time-lapse.mp4": {
+  "title": "Ganesha drawing, time-lapse",
+  "by": "Hand-drawn"
+ }
+}
