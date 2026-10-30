@@ -1006,6 +1006,28 @@
     };
   })();
 
+  /* ---- Digital Design & Marketing: one stage per click ---- */
+  hooks.ddm = (function () {
+    var raf = 0;
+    function counters(s) {
+      var bs = $$('.v-dash .kpis b', s), t0 = performance.now();
+      cancelAnimationFrame(raf);
+      (function tick(t) {
+        var k = Math.min(1, (t - t0) / (reduce ? 1 : 1600)), e = 1 - Math.pow(1 - k, 3);
+        bs.forEach(function (b) { b.textContent = Math.round(+b.dataset.to * e).toLocaleString('en-IN'); });
+        if (k < 1) raf = requestAnimationFrame(tick);
+      })(t0);
+    }
+    return {
+      step: function (s, st) {
+        $$('.tech-list li', s).forEach(function (li, k) { li.classList.toggle('on', k === st); li.classList.toggle('done', k < st); });
+        $$('.xp', s).forEach(function (x, k) { x.classList.toggle('on', k === st); });
+        if (st === 2) counters(s);
+      },
+      leave: function () { cancelAnimationFrame(raf); }
+    };
+  })();
+
   /* ---- Pipeline film: YouTube player that loads once and pauses when you leave ---- */
   hooks.film = (function () {
     var loaded = false, ifr = null;
