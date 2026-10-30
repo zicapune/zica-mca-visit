@@ -597,14 +597,15 @@
 
   /* ---- 15 · student wall ---- */
   hooks.wall = (function () {
-    var loaded = false, items = [], at = 0, timer = 0, el, track;
+    var loaded = false, items = [], sections = [], at = 0, timer = 0, el, track;
     function esc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function tileHTML(it) {
       var inner = it.kind === 'video' ? '<video src="' + it.src + '" muted loop playsinline preload="metadata"></video>'
         : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" decoding="async">' : '<img src="' + it.src + '" alt="" decoding="async" loading="lazy">';
       return '<figure class="ct" data-path="' + esc(it.path) + '">' + inner +
-        (it.title ? '<figcaption>' + esc(it.title) + '</figcaption>' : '') +
-        '<button class="adm-x" title="Move to archive" aria-label="Move to archive">✕</button></figure>';
+        (it.title ? '<figcaption>' + esc(it.title) + (it.by ? '<small>' + esc(it.by) + '</small>' : '') + '</figcaption>' : '') +
+        '<button class="adm-x" title="Move to archive" aria-label="Move to archive">✕</button>' +
+        '<button class="adm-mv" title="Move to another section" aria-label="Move to another section">⇄</button></figure>';
     }
     function layout(instant) {
       var tiles = $$('.ct', track); if (!tiles.length) return;
@@ -621,6 +622,8 @@
       track.style.transition = instant ? 'none' : '';
       track.style.transform = 'translateX(' + (el.offsetWidth / 2 - centre) + 'px)';
       $$('.car-dots i', el).forEach(function (d, i) { d.classList.toggle('on', i === at); });
+      var sec = items[at] && items[at].section;
+      $$('.car-secs button', el).forEach(function (b) { b.classList.toggle('on', b.dataset.sec === sec); });
     }
     function go(d) { at += d; layout(); restart(); }
     function restart() { clearInterval(timer); timer = setInterval(function () { if (slides[cur] === el.closest('.slide')) { at++; layout(); } }, 6000); }
@@ -635,11 +638,13 @@
     function build() {
       if (!items.length) {
         el.className = '';
-        el.innerHTML = '<div class="wall-empty"><div class="h3">Student work drops in here.</div><div class="body">Upload files to <code>media/reel/</code> named <code>01-title.mp4</code>, <code>02-title.jpg</code>…</div></div>';
+        el.innerHTML = '<div class="wall-empty"><div class="h3">Student work drops in here.</div><div class="body">Upload files to the folders in <code>media/work/</code> named <code>01-title.jpg</code>, <code>02-title.mp4</code>…</div></div>';
         return;
       }
       el.className = 'car';
-      el.innerHTML = '<div class="car-track">' + items.map(tileHTML).join('') + '</div>' +
+      var used = sections.filter(function (n) { return items.some(function (it) { return it.section === n; }); });
+      el.innerHTML = '<div class="car-secs">' + used.map(function (n) { var c = items.filter(function (it) { return it.section === n; }).length; return '<button data-sec="' + esc(n) + '">' + esc(n) + '<em>' + c + '</em></button>'; }).join('') + '</div>' +
+        '<div class="car-track">' + items.map(tileHTML).join('') + '</div>' +
         '<button class="car-btn prev" aria-label="Previous">‹</button><button class="car-btn next" aria-label="Next">›</button>' +
         '<div class="car-dots">' + items.map(function () { return '<i></i>'; }).join('') + '</div>';
       track = el.querySelector('.car-track');
@@ -651,6 +656,15 @@
           var v = t.querySelector('video'); if (v) { v.muted = !v.muted; }
         });
       });
+      $$('.car-secs button', el).forEach(function (b) { b.onclick = function () { var k = items.findIndex(function (it) { return it.section === b.dataset.sec; }); if (k >= 0) { at = k; layout(); restart(); } }; });
+      $$('.adm-mv', el).forEach(function (b) { b.onclick = function (e) {
+        e.stopPropagation();
+        var fig = b.closest('.ct'), path = fig.dataset.path, old = el.querySelector('.mv-menu'); if (old) old.remove();
+        var m = document.createElement('div'); m.className = 'mv-menu';
+        m.innerHTML = '<b>Move to</b>' + sections.map(function (n) { return '<button data-to="' + esc(n) + '">' + esc(n) + '</button>'; }).join('') + '<button data-to="">Original section</button>';
+        fig.appendChild(m);
+        $$('button', m).forEach(function (x) { x.onclick = function (ev) { ev.stopPropagation(); DeckAdmin.move(path, x.dataset.to); loaded = false; m.remove(); hooks.wall.enter(slides[cur]); }; });
+      }; });
       el.querySelector('.prev').onclick = function () { go(-1); };
       el.querySelector('.next').onclick = function () { go(1); };
       var x0 = null;
@@ -669,7 +683,7 @@
         if (loaded) { layout(true); restart(); ambient(sl); return; }
         loaded = true;
         if (!window.DeckMedia) return;
-        window.DeckMedia.list('media/reel').then(function (list) { items = list; build(); ambient(sl); });
+        window.DeckMedia.gallery().then(function (g) { items = g.items; sections = g.sections; at = Math.min(at, Math.max(0, items.length - 1)); build(); ambient(sl); });
       },
       leave: function () { clearInterval(timer); $$('#wall video').forEach(function (v) { v.pause(); }); },
       remove: function (path) { items = items.filter(function (it) { return it.path !== path; }); at = Math.min(at, items.length - 1); build(); }

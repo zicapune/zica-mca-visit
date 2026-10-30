@@ -73,6 +73,21 @@ window.DECK_CONFIG = {
     ]
   },
 
+  /* Student-work gallery ("Made at ZICA Pune" slide + reel.html).
+     One folder per section, shown in this order. File names set order and caption:
+       03-classroom-unreal-engine.jpg            → "Classroom unreal engine"
+       01-digital-painting--by-rushikesh-thorat.jpg → caption + "by Rushikesh Thorat"
+       01-floating-island--faculty.jpg           → caption + "Faculty work"
+     To move a piece to another section without GitHub: admin mode (M, 1111) → ⇄ on the piece. */
+  GALLERY: [
+    { dir: 'media/work/3d-unreal',      name: '3D & Unreal' },
+    { dir: 'media/work/gen-ai',         name: 'Gen AI campaigns' },
+    { dir: 'media/work/branding',       name: 'Branding & packaging' },
+    { dir: 'media/work/illustration',   name: 'Illustration & game art' },
+    { dir: 'media/work/matte-painting', name: 'Matte painting' },
+    { dir: 'media/reel',                name: 'Reels & films' }
+  ],
+
   /* UI/UX spotlight: the 12-month Professional Program adds these on top of the 6-month tools. */
   UIUX_UPGRADE: { months: 12, adds: ['Illustrator', 'Miro', 'FigJam', 'Framer'] },
 

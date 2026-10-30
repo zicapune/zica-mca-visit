@@ -12,9 +12,18 @@
 
   function natural(a, b) { return a.sort.localeCompare(b.sort, undefined, { numeric: true, sensitivity: 'base' }); }
 
+  var ACR = { ai: 'AI', ui: 'UI', ux: 'UX', vfx: 'VFX', '3d': '3D', '2d': '2D', xr: 'XR', ar: 'AR', vr: 'VR', cgi: 'CGI' };
+  function acr(t) { return t.replace(/\b(ai|ui|ux|vfx|3d|2d|xr|ar|vr|cgi)\b/gi, function (w) { return ACR[w.toLowerCase()]; }); }
+  function cap(t) { return t ? acr(t.charAt(0).toUpperCase() + t.slice(1)) : ''; }
   function prettify(name) {
-    var t = name.replace(/\.[^.]+$/, '').replace(/^\d+[\s._-]*/, '').replace(/[_-]+/g, ' ').trim();
-    return t ? t.charAt(0).toUpperCase() + t.slice(1) : '';
+    var base = name.replace(/\.[^.]+$/, '').replace(/^\d+[\s._-]*/, '').split('--')[0];
+    return cap(base.replace(/[_-]+/g, ' ').trim());
+  }
+  function credit(name) {
+    var m = name.replace(/\.[^.]+$/, '').split('--')[1];
+    if (!m) return '';
+    if (/^faculty$/i.test(m)) return 'Faculty work';
+    return m.split(/[-_]+/).map(function (w, i) { return i === 0 && /^by$/i.test(w) ? 'by' : cap(w); }).join(' ');
   }
 
   function ytId(url) {
@@ -52,8 +61,8 @@
     var names = await listNames(folder);
     var out = [];
     names.forEach(function (n) {
-      if (VIDEO.test(n)) out.push({ kind: 'video', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
-      else if (IMAGE.test(n)) out.push({ kind: 'image', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), sort: n });
+      if (VIDEO.test(n)) out.push({ kind: 'video', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), by: credit(n), sort: n });
+      else if (IMAGE.test(n)) out.push({ kind: 'image', path: folder + '/' + n, src: folder + '/' + encodeURIComponent(n), title: prettify(n), by: credit(n), sort: n });
     });
     if (names.indexOf('youtube.txt') !== -1) {
       try {
@@ -114,10 +123,26 @@
       hide: function (p) { return set(p, true); },
       restore: function (p) { return set(p, false); },
       where: function () { return remote ? 'Supabase (every PC)' : 'this browser only'; },
-      checkPin: function (pin) { return pin === String(cfg.PIN || '1111'); }
+      checkPin: function (pin) { return pin === String(cfg.PIN || '1111'); },
+      movedTo: function (p) { try { return (JSON.parse(localStorage.getItem('deck-moves') || '{}'))[p] || ''; } catch (e) { return ''; } },
+      move: function (p, section) { try { var m = JSON.parse(localStorage.getItem('deck-moves') || '{}'); if (section) m[p] = section; else delete m[p]; localStorage.setItem('deck-moves', JSON.stringify(m)); } catch (e) {} }
     };
   })();
   window.DeckAdmin = DeckAdmin;
 
-  window.DeckMedia = { list: list };
+  /* All gallery sections in order; admin "move" overrides decide the section shown. */
+  async function gallery() {
+    var secs = (window.DECK_CONFIG || {}).GALLERY || [{ dir: 'media/reel', name: 'Student work' }];
+    var lists = await Promise.all(secs.map(function (g) { return list(g.dir); }));
+    var bySec = secs.map(function () { return []; });
+    lists.forEach(function (l, i) { l.forEach(function (it) {
+      var to = DeckAdmin.movedTo(it.path), k = i;
+      if (to) { var j = secs.findIndex(function (g) { return g.name === to; }); if (j >= 0) k = j; }
+      it.section = secs[k].name; bySec[k].push(it);
+    }); });
+    var out = []; bySec.forEach(function (l) { out = out.concat(l); });
+    return { sections: secs.map(function (g) { return g.name; }), items: out };
+  }
+
+  window.DeckMedia = { list: list, gallery: gallery };
 })();
