@@ -424,12 +424,13 @@
     var I_CAMPUS = '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>';
     var I_ONLINE = '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2.2"/></svg>';
     function ver(v) {
-      return '<div class="o-ver"><div class="o-tier">' + v.tier + '</div>' +
-        '<div class="o-dur"><b data-from="' + v.from + '" data-to="' + v.to + '">' + v.from + '</b><span>months</span></div>' +
-        '<div class="o-was">usually <s>' + v.from + ' months</s></div>' +
-        '<div class="o-price"><s>' + inr(v.mrp) + '</s><b>' + inr(v.offer) + '</b><i>You save ' + inr(v.mrp - v.offer) + '</i></div></div>';
+      var tbc = v.to == null;
+      return '<div class="o-ver' + (tbc ? ' tbc' : '') + '"><div class="o-tier">' + v.tier + '</div>' +
+        '<div class="o-dur"><b data-from="' + v.from + '" data-to="' + (tbc ? v.from : v.to) + '">' + v.from + '</b><span>months</span></div>' +
+        '<div class="o-was">' + (tbc ? 'Hybrid plan: ask us' : 'usually <s>' + v.from + ' months</s>') + '</div>' +
+        (v.mrp && v.offer ? '<div class="o-price"><s>' + inr(v.mrp) + '</s><b>' + inr(v.offer) + '</b><i>You save ' + inr(v.mrp - v.offer) + '</i></div>' : '') + '</div>';
     }
-    var h = '<div class="o-head"><div class="o-kick">' + o.kicker + '</div><div class="o-title">' + o.title + '</div><div class="o-sub">' + o.sub + '</div></div><div class="o-grid">';
+    var h = '<div class="o-head"><div class="o-kick">' + o.kicker + '</div><div class="o-title">' + o.title + '</div><div class="o-sub">' + o.sub + '</div></div><div class="o-grid n' + o.rows.length + '">';
     o.rows.forEach(function (r, i) {
       h += '<div class="o-card' + (r.highlight ? ' hi' : '') + (r.versions.length > 1 ? ' wide' : '') + '" style="--i:' + i + '">' +
         '<div class="o-pill">' + (r.highlight ? 'Highly recommended' : 'Recommended') + '</div>' +

@@ -790,3 +790,29 @@ body.overview .stage { overflow: auto; }
 .offer.money .o-name { min-height: 0; }
 .offer.money .o-card:not(.wide) .o-name { min-height: 80px; }
 .offer.money .o-week { margin-top: 20px; }
+
+/* five programs: UI/UX hero tile on the left, four compact tiles in a 2×2 */
+.o-grid.n5 { grid-template-columns: 1.55fr 1fr 1fr; grid-template-rows: auto auto; gap: 18px; margin-top: 30px; }
+.o-grid.n5 .o-card.wide { grid-row: span 2; display: flex; flex-direction: column; }
+.o-grid.n5 .o-card.wide .o-vers { grid-auto-flow: row; flex: 1; align-content: space-evenly; }
+.o-grid.n5 .o-card.wide .o-ver + .o-ver { border-left: 0; padding-left: 0; margin-left: 0; border-top: 1px dashed rgba(255,181,71,.35); padding-top: 14px; margin-top: 14px; }
+.o-grid.n5 .o-card:not(.wide) { padding: 20px 26px 18px; }
+.o-grid.n5 .o-card:not(.wide) .o-name { font-size: 30px; min-height: 0; margin-top: 6px; }
+.o-grid.n5 .o-card:not(.wide) .o-tier { font-size: 17px; margin-top: 4px; }
+.o-grid.n5 .o-card:not(.wide) .o-dur b { font-size: 84px; }
+.o-grid.n5 .o-card:not(.wide) .o-dur span { font-size: 22px; }
+.o-grid.n5 .o-card:not(.wide) .o-was { font-size: 17px; height: 22px; margin-top: 4px; }
+.o-grid.n5 .o-card.wide .o-dur b { font-size: 112px; }
+.o-grid.n5 .o-price { margin-top: 10px; }
+.offer.money .o-grid.n5 .o-price b { font-size: 30px; }
+.offer.money .o-grid.n5 .o-price s { font-size: 17px; }
+.offer.money .o-grid.n5 .o-card:not(.wide) .o-dur b { font-size: 64px; }
+.offer.money .o-grid.n5 .o-card.wide .o-dur b { font-size: 84px; }
+.offer.hyb .o-ver.tbc .o-dur b { color: var(--text); text-shadow: none; }
+.o-ver.tbc .o-was { color: var(--key); font-weight: 600; }
+.offer:has(.o-grid.n5) .o-title { font-size: 72px; }
+.offer:has(.o-grid.n5) .o-sub { font-size: 24px; margin-top: 8px; }
+.offer:has(.o-grid.n5) .o-week { margin-top: 20px; }
+.offer:has(.o-grid.n5) .o-day { padding: 12px 18px; }
+.offer:has(.o-grid.n5) .o-batch b { font-size: 44px; }
+.offer.money:has(.o-grid.n5) .o-week { display: none; }
