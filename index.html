@@ -7,7 +7,7 @@
 <meta name="description" content="ZICA Pune — industrial visit deck for ASM IBMR MCA students">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 10-9 10-9-10z' fill='%23ffb547'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/deck.css?v=202610301334">
+<link rel="stylesheet" href="assets/deck.css?v=202610310010">
 </head>
 <body>
 <div class="stage" id="stage">
@@ -665,44 +665,11 @@
   </section>
 
   <!-- ============ 16 · LIVE DEMO ============ -->
-  <section class="slide floor" id="s-demo" data-title="Live demo" data-hook="demo">
+  <section class="slide floor" id="s-demo" data-title="Live demo">
     <div class="live"><i></i>Live</div>
-    <h2 class="h2 demo-h">Enough slides. Let's make Python build a world.</h2>
-    <p class="demo-sub">Blender 5.2 · one script · sliders rebuild the scene live · Preview / Normal / Good / Cinematic render buttons</p>
-    <div class="lib">
-      <div class="lib-card hero" style="--i:0">
-        <img src="blender/previews/suite.jpg" alt="" loading="lazy">
-        <div class="lib-body"><div class="sc-k">Everything · recommended</div><b>ZICA World Builder 2</b><p>All four tools in one script, one sidebar tab.</p>
-          <div class="lib-tags"><span>Worlds</span><span>Image to World</span><span>Prop Factory</span><span>Walls & Surfaces</span></div>
-          <div class="sc-btns"><button class="sl-btn copy-py" data-src="blender/zica_world_builder_2.py">Copy script</button><a class="sl-btn" href="blender/zica_world_builder_2.py" download="zica_world_builder_2.py">zica_world_builder_2.py</a></div></div>
-      </div>
-      <div class="lib-card" style="--i:1">
-        <img src="blender/previews/worlds.jpg" alt="" loading="lazy">
-        <div class="lib-body"><div class="sc-k">Landscapes & cities</div><b>ZICA Worlds</b><p>Six worlds from pure code: Neon City, Ancient Old Town, Island, Desert Canyon, Snowy Peaks, Forest Valley.</p>
-          <div class="lib-tags"><span>Size</span><span>Density</span><span>Seed</span><span>Sun</span><span>Haze</span><span>Water</span></div>
-          <div class="sc-btns"><button class="sl-btn copy-py" data-src="blender/zica_worlds.py">Copy script</button><a class="sl-btn" href="blender/zica_worlds.py" download="zica_worlds.py">zica_worlds.py</a></div></div>
-      </div>
-      <div class="lib-card" style="--i:2">
-        <img src="blender/previews/image.jpg" alt="" loading="lazy">
-        <div class="lib-body"><div class="sc-k">Picture → 3D</div><b>ZICA Image to World</b><p>Five ways to turn any picture into 3D: photo terrain, painted map, pixel mosaic, 3D postcard, photo city.</p>
-          <div class="lib-tags"><span>Resolution</span><span>Height</span><span>Water</span><span>Trees</span><span>Building height</span></div>
-          <div class="sc-btns"><button class="sl-btn copy-py" data-src="blender/zica_image_to_world.py">Copy script</button><a class="sl-btn" href="blender/zica_image_to_world.py" download="zica_image_to_world.py">zica_image_to_world.py</a></div></div>
-      </div>
-      <div class="lib-card" style="--i:3">
-        <img src="blender/previews/props.jpg" alt="" loading="lazy">
-        <div class="lib-body"><div class="sc-k">Game props</div><b>ZICA Prop Factory</b><p>22 props in four eras: ancient, modern, war, sci-fi. One prop or the whole set lined up.</p>
-          <div class="lib-tags"><span>Wear / damage</span><span>Detail</span><span>Scale</span><span>Seed</span></div>
-          <div class="sc-btns"><button class="sl-btn copy-py" data-src="blender/zica_prop_factory.py">Copy script</button><a class="sl-btn" href="blender/zica_prop_factory.py" download="zica_prop_factory.py">zica_prop_factory.py</a></div></div>
-      </div>
-      <div class="lib-card" style="--i:4">
-        <img src="blender/previews/walls.jpg" alt="" loading="lazy">
-        <div class="lib-body"><div class="sc-k">Real-geometry walls</div><b>ZICA Wall & Surface Engine</b><p>Brick, castle stone, concrete with rebar, peeling plaster, wooden planks, sci-fi panels.</p>
-          <div class="lib-tags"><span>Damage</span><span>Grime / moss</span><span>Detail</span><span>Lighting</span></div>
-          <div class="sc-btns"><button class="sl-btn copy-py" data-src="blender/zica_wall_engine.py">Copy script</button><a class="sl-btn" href="blender/zica_wall_engine.py" download="zica_wall_engine.py">zica_wall_engine.py</a></div></div>
-      </div>
-    </div>
-    <span class="demo-hint">Blender → Scripting → New → Ctrl+V → Run Script (Alt+P) → Layout → N → ZICA tab · <a href="https://github.com/zicapune/zica-mca-visit/blob/main/blender/README.md" target="_blank" rel="noopener">How to use</a> · Blender 4.2? use <a href="blender/zica_world_builder_v1_blender4.py" download>World Builder 1</a></span>
-    <aside class="notes">SCRIPT LIBRARY (Blender 5.2 LTS, tested on 5.2.3). Before the session: click "Copy script" on ZICA World Builder 2 (it has everything), then in Blender: Scripting tab, New, Ctrl+V, Run Script (Alt+P). Go back to Layout, hover the 3D view, press N, open the ZICA tab. Top panel: pick Preview quality and keep Live update on. DEMO ORDER (5 min): 1) Worlds → Island Lagoon → Build world, drag Seed: "a new island every number". 2) Image to World → Make sample map: "I painted this in Paint; Python built the world." Then switch Mode to Photo to city with any photo. 3) Walls & Surfaces → Concrete → Build, drag Damage from 0 to 1: holes, rebar, rubble. 4) Props → War → Whole set, drag Wear. 5) Quality Good → Render preview (shows inside the panel). HOW IMAGE TO WORLD WORKS: the script reads every pixel. Photo to terrain: brightness = height (that is why the old version only made mountains). Painted map: the COLOUR decides the land (blue water, green forest, yellow sand, grey city, white mountains, red roads). Pixel mosaic: each pixel a block. 3D postcard: the picture becomes a relief. Photo to city: brightness = tower height, colours paint the buildings, blue = canals, green = parks. The other cards are the same tools as single scripts if you only want one panel.</aside>
+    <h1 class="h-mega">Enough slides. Let's make Python build a world.</h1>
+    <p class="lead" style="margin-top:40px">Blender, one script, a few seconds.</p>
+    <aside class="notes">Alt+Tab to Blender and run the demo there. (The script library was taken off this slide until the Image to 3D add-on is fully ready.)</aside>
   </section>
 
   <!-- ============ 17 · QUEST ============ -->
@@ -759,10 +726,10 @@
   <div class="grain"></div>
 </div>
 
-<script src="assets/config.js?v=202610301334"></script>
-<script src="assets/media.js?v=202610301334"></script>
+<script src="assets/config.js?v=202610310010"></script>
+<script src="assets/media.js?v=202610310010"></script>
 <script src="assets/vendor/qrcode.js"></script>
-<script src="assets/lab.js?v=202610301334"></script>
-<script src="assets/deck.js?v=202610301334"></script>
+<script src="assets/lab.js?v=202610310010"></script>
+<script src="assets/deck.js?v=202610310010"></script>
 </body>
 </html>
