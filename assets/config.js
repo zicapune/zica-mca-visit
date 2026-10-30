@@ -61,18 +61,13 @@ window.DECK_CONFIG = {
     hours: '2 hrs',
     week: ['Campus', 'Campus', 'Online', 'Online', 'Online'],   // Mon → Fri
     minBatch: 5,
-    /* to: null = hybrid months not decided yet → the card says "Hybrid plan: ask us" (no number invented).
-       First row is the big tile. */
+    /* One row per programme version. Only programmes on Shikha ma'am's ASM sheet are listed. */
     rows: [
       { name: 'UI & UX', highlight: true, versions: [
         { tier: 'Professional Program', from: 12, to: 9, mrp: 150000, offer: 100000 },
         { tier: 'Program',              from: 6,  to: 3, mrp: 65000,  offer: 45000 } ] },
       { name: 'Game Art & Design', versions: [
         { tier: 'Professional Program', from: 12, to: 7, mrp: 170000, offer: 120000 } ] },
-      { name: 'Visual Effects', versions: [
-        { tier: 'Professional Program', from: 12, to: null, mrp: null, offer: null } ] },
-      { name: 'Adv. Motion Graphics', versions: [
-        { tier: 'Program', from: 6, to: null, mrp: null, offer: null } ] },
       { name: 'Digital Design & Marketing', versions: [
         { tier: 'Professional Program', from: 12, to: 8, mrp: 150000, offer: 100000 } ] }
     ]

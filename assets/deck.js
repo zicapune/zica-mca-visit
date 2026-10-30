@@ -421,33 +421,33 @@
     if (!o || !el) return null;
     if (OF.built) return el;
     var DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-    var I_CAMPUS = '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>';
-    var I_ONLINE = '<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2.2"/></svg>';
-    function ver(v) {
-      var tbc = v.to == null;
-      return '<div class="o-ver' + (tbc ? ' tbc' : '') + '"><div class="o-tier">' + v.tier + '</div>' +
-        '<div class="o-dur"><b data-from="' + v.from + '" data-to="' + (tbc ? v.from : v.to) + '">' + v.from + '</b><span>months</span></div>' +
-        '<div class="o-was">' + (tbc ? 'Hybrid plan: ask us' : 'usually <s>' + v.from + ' months</s>') + '</div>' +
-        (v.mrp && v.offer ? '<div class="o-price"><s>' + inr(v.mrp) + '</s><b>' + inr(v.offer) + '</b><i>You save ' + inr(v.mrp - v.offer) + '</i></div>' : '') + '</div>';
-    }
-    var h = '<div class="o-head"><div class="o-kick">' + o.kicker + '</div><div class="o-title">' + o.title + '</div><div class="o-sub">' + o.sub + '</div></div><div class="o-grid n' + o.rows.length + '">';
-    o.rows.forEach(function (r, i) {
-      h += '<div class="o-card' + (r.highlight ? ' hi' : '') + (r.versions.length > 1 ? ' wide' : '') + '" style="--i:' + i + '">' +
-        '<div class="o-pill">' + (r.highlight ? 'Highly recommended' : 'Recommended') + '</div>' +
-        '<div class="o-name">' + r.name + '</div><div class="o-vers">' + r.versions.map(ver).join('') + '</div></div>';
+    var I_CAMPUS = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M5 21V9l7-5 7 5v12"/><path d="M9 21v-6h6v6"/></svg>';
+    var I_ONLINE = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="12" rx="1"/><path d="M8 20h8M12 16v4"/><circle cx="12" cy="10" r="2.2"/></svg>';
+    var MAX = 12, rows = [];
+    o.rows.forEach(function (r) { r.versions.forEach(function (v, j) { rows.push({ r: r, v: v, first: j === 0, n: r.versions.length }); }); });
+    var h = '<div class="o-head"><div class="o-kick">' + o.kicker + '</div><div class="o-title">' + o.title + '</div><div class="o-sub">' + o.sub + '</div></div>' +
+      '<div class="o-rows"><div class="o-axis"><span></span><span>Months of learning</span><span></span><span></span></div>';
+    rows.forEach(function (x, i) {
+      var v = x.v, tr = '';
+      for (var k = 0; k < v.from; k++) tr += '<u class="' + (k >= v.to ? 'cut' : 'keep') + '" style="--k:' + k + ';--x:' + (k / (MAX - 1) * 100) + '%;--d:' + Math.max(0, k - v.to) + '"></u>';
+      h += '<div class="o-row' + (x.r.highlight ? ' hi' : '') + (x.first ? '' : ' cont') + '" style="--i:' + i + ';--f:' + ((v.from - 1) / (MAX - 1) * 100) + '%;--t:' + ((v.to - 1) / (MAX - 1) * 100) + '%">' +
+        '<div class="o-who">' + (x.first ? '<span class="o-pill">' + (x.r.highlight ? 'Highly recommended' : 'Recommended') + '</span><b>' + x.r.name + '</b>' : '') + '<i>' + v.tier + '</i></div>' +
+        '<div class="o-track"><s></s>' + tr + '</div>' +
+        '<div class="o-num"><b data-from="' + v.from + '" data-to="' + v.to + '">' + v.from + '</b><span>months</span><em>was ' + v.from + '</em></div>' +
+        '<div class="o-price"><s>' + inr(v.mrp) + '</s><b>' + inr(v.offer) + '</b></div></div>';
     });
-    h += '</div><div class="o-week"><div class="o-wl">A week in the hybrid plan</div><div class="o-days">';
+    h += '</div><div class="o-week"><div class="o-days">';
     o.week.forEach(function (w, i) {
       var camp = /campus/i.test(w);
-      h += '<div class="o-day ' + (camp ? 'camp' : 'onl') + '" style="--j:' + i + '"><em>' + DAYS[i] + '</em>' + (camp ? I_CAMPUS : I_ONLINE) + '<b>' + (camp ? 'On your campus' : 'Live online') + '</b><span>' + o.hours + '</span></div>';
+      h += '<div class="o-day ' + (camp ? 'camp' : 'onl') + '" style="--j:' + i + '">' + (camp ? I_CAMPUS : I_ONLINE) + '<em>' + DAYS[i] + '</em><b>' + (camp ? 'Your campus' : 'Live online') + '</b></div>';
     });
-    h += '<div class="o-batch" id="oBatch"><b>' + o.minBatch + '</b><span>students start a batch</span></div></div></div>';
+    h += '<div class="o-day o-hrs" style="--j:5"><b>' + o.hours + '</b><em>a day</em></div><div class="o-batch" id="oBatch" style="--j:6"><b>' + o.minBatch + '</b><em>students start a batch</em></div></div></div>';
     el.innerHTML = h; OF.built = true;
     $('#oBatch').addEventListener('click', function (e) { e.stopPropagation(); offerMoney(); });
     return el;
   }
   function rollMonths(to) {
-    $$('#offer .o-dur b').forEach(function (b) {
+    $$('#offer .o-num b').forEach(function (b) {
       var a = +b.textContent, z = +b.getAttribute(to ? 'data-to' : 'data-from'), t0 = performance.now(), dur = reduce ? 1 : 900;
       (function tick(t) { var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); b.textContent = Math.round(a + (z - a) * e); if (k < 1) requestAnimationFrame(tick); })(t0);
     });
@@ -455,7 +455,7 @@
   function offerOpen() {
     var el = offerBuild(); if (!el) return;
     OF.open = true; OF.hyb = false; el.classList.remove('hyb', 'money');
-    $$('#offer .o-dur b').forEach(function (b) { b.textContent = b.getAttribute('data-from'); });
+    $$('#offer .o-num b').forEach(function (b) { b.textContent = b.getAttribute('data-from'); });
     el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); el.parentNode.classList.add('offer-on'); try { PB.mode(3); } catch (e) {}
   }
   function offerHybrid(on) { OF.hyb = on; $('#offer').classList.toggle('hyb', on); rollMonths(on); }
