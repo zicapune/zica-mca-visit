@@ -48,14 +48,14 @@
 
   <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Player">
     <div class="media" id="lbMedia"></div>
-    <div class="bar"><div class="title" id="lbTitle"></div><button id="lbPrev">Previous</button><button id="lbNext">Next</button><button id="lbClose">Close</button></div>
+    <div class="bar"><div class="title" id="lbTitle"></div><button id="lbSpeed" title="Playback speed">1×</button><button id="lbPrev">Previous</button><button id="lbNext">Next</button><button id="lbClose">Close</button></div>
   </div>
 
 <script src="assets/config.js"></script>
 <script src="assets/media.js"></script>
 <script>
 (function () {
-  var items = [], at = -1;
+  var items = [], at = -1, spd;
   var grid = document.getElementById('grid'), lb = document.getElementById('lb'), lbMedia = document.getElementById('lbMedia');
   var PLAY = '<span class="play"><svg viewBox="0 0 10 12"><path d="M0 0l10 6-10 6z"/></svg></span>';
 
@@ -86,12 +86,15 @@
     lbMedia.innerHTML = it.kind === 'video' ? '<video src="' + it.src + '" controls autoplay playsinline></video>'
       : it.kind === 'youtube' ? '<iframe src="' + it.src + '?autoplay=1&rel=0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen title="' + (it.title || 'Video') + '"></iframe>'
       : '<img src="' + it.src + '" alt="' + (it.title || '') + '">';
+    spd.textContent = '1×'; spd.style.display = it.kind === 'video' ? '' : 'none';
     document.getElementById('lbTitle').textContent = (it.title || '') + (it.by ? ' · ' + it.by : '');
     lb.classList.add('show');
     document.getElementById('lbClose').focus();
   }
   function close() { lb.classList.remove('show'); lbMedia.innerHTML = ''; var t = grid.querySelector('[data-i="' + at + '"]'); if (t) t.focus(); }
   document.getElementById('lbClose').onclick = close;
+  spd = document.getElementById('lbSpeed');
+  spd.onclick = function () { var v = lbMedia.querySelector('video'); if (!v) return; v.playbackRate = v.playbackRate === 1 ? 2 : 1; spd.textContent = v.playbackRate + '×'; };
   document.getElementById('lbNext').onclick = function () { open(at + 1); };
   document.getElementById('lbPrev').onclick = function () { open(at - 1); };
   lb.addEventListener('click', function (e) { if (e.target === lb) close(); });

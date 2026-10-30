@@ -600,8 +600,13 @@
     var loaded = false, items = [], sections = [], at = 0, timer = 0, el, track;
     function esc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function tileHTML(it) {
-      var inner = it.kind === 'video' ? '<video src="' + it.src + '" muted loop playsinline preload="metadata"></video>'
-        : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" decoding="async">' : '<img src="' + it.src + '" alt="" decoding="async" loading="lazy">';
+      var PLAY = '<svg viewBox="0 0 24 24" width="22" height="22"><path class="i-play" d="M7 4l13 8-13 8z" fill="currentColor"/><g class="i-pause" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></g></svg>';
+      var inner = it.kind === 'video' ? '<video src="' + it.src + '#t=0.1" playsinline preload="metadata"></video>' +
+          '<button class="v-big" aria-label="Play">' + PLAY + '</button>' +
+          '<div class="vc"><button class="v-pp" aria-label="Play or pause">' + PLAY + '</button><input class="v-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">' +
+          '<span class="v-t">0:00</span><button class="v-sp" aria-label="Speed">1×</button><button class="v-mu" aria-label="Sound">🔊</button></div>'
+        : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" decoding="async"><button class="v-big yt" data-yt="' + it.id + '" aria-label="Play">' + PLAY + '</button>'
+        : '<img src="' + it.src + '" alt="" decoding="async" loading="lazy">';
       return '<figure class="ct" data-path="' + esc(it.path) + '">' + inner +
         (it.title ? '<figcaption>' + esc(it.title) + (it.by ? '<small>' + esc(it.by) + '</small>' : '') + '</figcaption>' : '') +
         '<button class="adm-x" title="Move to archive" aria-label="Move to archive">✕</button>' +
@@ -617,7 +622,8 @@
         x += w + 28;
         t.classList.toggle('on', i === at);
         var v = t.querySelector('video');
-        if (v) { if (i === at && slides[cur] === el.closest('.slide')) { var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else v.pause(); }
+        if (v && i !== at) v.pause();
+        if (i !== at) { var yf = t.querySelector('iframe'); if (yf) yf.remove(); }
       });
       track.style.transition = instant ? 'none' : '';
       track.style.transform = 'translateX(' + (el.offsetWidth / 2 - centre) + 'px)';
@@ -626,7 +632,37 @@
       $$('.car-secs button', el).forEach(function (b) { b.classList.toggle('on', b.dataset.sec === sec); });
     }
     function go(d) { at += d; layout(); restart(); }
-    function restart() { clearInterval(timer); timer = setInterval(function () { if (slides[cur] === el.closest('.slide')) { at++; layout(); } }, 6000); }
+    function busy() { return !!track && (Array.prototype.some.call(track.querySelectorAll('video'), function (v) { return !v.paused; }) || !!track.querySelector('iframe')); }
+    function restart() { clearInterval(timer); timer = setInterval(function () { if (slides[cur] === el.closest('.slide') && !busy()) { at++; layout(); } }, 6000); }
+    function fmt(x) { x = Math.max(0, Math.floor(x || 0)); return Math.floor(x / 60) + ':' + ('0' + x % 60).slice(-2); }
+    function wireVideo(t) {
+      var v = t.querySelector('video'); if (!v) return;
+      var seek = t.querySelector('.v-seek'), tt = t.querySelector('.v-t'), sp = t.querySelector('.v-sp'), mu = t.querySelector('.v-mu');
+      function toggle() { if (v.paused) { $$('#wall video').forEach(function (o) { if (o !== v) o.pause(); }); var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause(); }
+      function stop(e) { e.stopPropagation(); }
+      ['pointerdown', 'pointerup', 'click', 'keydown'].forEach(function (ev) { t.querySelector('.vc').addEventListener(ev, stop); });
+      t.querySelector('.v-big').addEventListener('click', function (e) { if (t.classList.contains('on')) { e.stopPropagation(); toggle(); } });
+      t.querySelector('.v-pp').addEventListener('click', toggle);
+      v.addEventListener('play', function () { t.classList.add('playing'); });
+      v.addEventListener('pause', function () { t.classList.remove('playing'); });
+      v.addEventListener('ended', function () { t.classList.remove('playing'); });
+      v.addEventListener('timeupdate', function () { if (!seek._drag && v.duration) seek.value = Math.round(v.currentTime / v.duration * 1000); tt.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration); });
+      v.addEventListener('loadedmetadata', function () { tt.textContent = '0:00 / ' + fmt(v.duration); });
+      seek.addEventListener('input', function () { seek._drag = true; if (v.duration) v.currentTime = seek.value / 1000 * v.duration; });
+      seek.addEventListener('change', function () { seek._drag = false; seek.blur(); });
+      sp.addEventListener('click', function () { v.playbackRate = v.playbackRate === 1 ? 2 : 1; sp.textContent = v.playbackRate + '×'; sp.classList.toggle('on', v.playbackRate !== 1); });
+      mu.addEventListener('click', function () { v.muted = !v.muted; mu.textContent = v.muted ? '🔇' : '🔊'; });
+    }
+    function wireYT(t) {
+      var b = t.querySelector('.v-big.yt'); if (!b) return;
+      b.addEventListener('click', function (e) {
+        if (!t.classList.contains('on')) return; e.stopPropagation();
+        var f = document.createElement('iframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.yt + '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+        f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true; f.className = 'yt-frame';
+        t.appendChild(f);
+      });
+    }
     function sizeTile(t) {
       var m = t.querySelector('img, video'), H = 600;
       function set(ar) { t.style.width = Math.round(H * Math.max(0.6, Math.min(1.9, ar || 16 / 9))) + 'px'; layout(true); }
@@ -649,11 +685,11 @@
         '<div class="car-dots">' + items.map(function () { return '<i></i>'; }).join('') + '</div>';
       track = el.querySelector('.car-track');
       $$('.ct', track).forEach(function (t, i) {
-        sizeTile(t);
+        sizeTile(t); wireVideo(t); wireYT(t);
         t.addEventListener('click', function (e) {
-          if (e.target.closest('.adm-x')) return;
+          if (e.target.closest('.adm-x, .adm-mv, .mv-menu, .vc')) return;
           if (i !== at) { at = i; layout(); restart(); return; }
-          var v = t.querySelector('video'); if (v) { v.muted = !v.muted; }
+          var v = t.querySelector('video'); if (v) { if (v.paused) v.play(); else v.pause(); }
         });
       });
       $$('.car-secs button', el).forEach(function (b) { b.onclick = function () { var k = items.findIndex(function (it) { return it.section === b.dataset.sec; }); if (k >= 0) { at = k; layout(); restart(); } }; });
@@ -668,7 +704,7 @@
       el.querySelector('.prev').onclick = function () { go(-1); };
       el.querySelector('.next').onclick = function () { go(1); };
       var x0 = null;
-      track.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+      track.addEventListener('pointerdown', function (e) { x0 = e.target.closest('.vc') ? null : e.clientX; });
       track.addEventListener('pointerup', function (e) { if (x0 !== null && Math.abs(e.clientX - x0) > 40) go(e.clientX < x0 ? 1 : -1); x0 = null; });
       layout(true); restart();
     }
@@ -685,7 +721,7 @@
         if (!window.DeckMedia) return;
         window.DeckMedia.gallery().then(function (g) { items = g.items; sections = g.sections; at = Math.min(at, Math.max(0, items.length - 1)); build(); ambient(sl); });
       },
-      leave: function () { clearInterval(timer); $$('#wall video').forEach(function (v) { v.pause(); }); },
+      leave: function () { clearInterval(timer); $$('#wall video').forEach(function (v) { v.pause(); }); $$('#wall iframe').forEach(function (f) { f.remove(); }); },
       remove: function (path) { items = items.filter(function (it) { return it.path !== path; }); at = Math.min(at, items.length - 1); build(); }
     };
   })();
