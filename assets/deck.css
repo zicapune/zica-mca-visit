@@ -1002,3 +1002,8 @@ body.admin .adm-mv { display: grid; place-items: center; }
 .tl-key { cursor: pointer; }
 .tl-key::after { content: ''; position: absolute; inset: -9px; }
 .tl-key:hover { border-color: var(--act, #5ce1e6); }
+
+.vc .v-mu { border: 1px solid #4a4f66; font-size: 13px; white-space: nowrap; } .vc .v-mu.on { background: #5ce1e6; color: var(--ink); border-color: #5ce1e6; }
+
+.al .mono-av { width: 168px; height: 216px; display: grid; place-items: center; font-size: 64px; font-weight: 800; letter-spacing: -.04em; color: var(--key);
+  background: radial-gradient(circle at 50% 35%, rgba(255,181,71,.16), transparent 70%), #11131b; border: 1px solid var(--line); font-variation-settings: 'wdth' 78; }

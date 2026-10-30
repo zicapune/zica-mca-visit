@@ -603,10 +603,10 @@
     function esc(t) { return String(t || '').replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function tileHTML(it) {
       var PLAY = '<svg viewBox="0 0 24 24" width="22" height="22"><path class="i-play" d="M7 4l13 8-13 8z" fill="currentColor"/><g class="i-pause" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></g></svg>';
-      var inner = it.kind === 'video' ? '<video src="' + it.src + '#t=0.1" playsinline preload="metadata"></video>' +
+      var inner = it.kind === 'video' ? '<video src="' + it.src + '#t=0.1" playsinline muted preload="metadata"></video>' +
           '<button class="v-big" aria-label="Play">' + PLAY + '</button>' +
           '<div class="vc"><button class="v-pp" aria-label="Play or pause">' + PLAY + '</button><input class="v-seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">' +
-          '<span class="v-t">0:00</span><button class="v-sp" aria-label="Speed">1×</button><button class="v-mu" aria-label="Sound">🔊</button></div>'
+          '<span class="v-t">0:00</span><button class="v-sp" aria-label="Speed">1×</button><button class="v-mu" aria-label="Sound">🔇 Sound</button></div>'
         : it.kind === 'youtube' ? '<img src="' + it.thumb + '" alt="" decoding="async"><button class="v-big yt" data-yt="' + it.id + '" aria-label="Play">' + PLAY + '</button>'
         : '<img src="' + it.src + '" alt="" decoding="async" loading="lazy">';
       return '<figure class="ct" data-path="' + esc(it.path) + '">' + inner +
@@ -653,7 +653,7 @@
       seek.addEventListener('input', function () { seek._drag = true; if (v.duration) v.currentTime = seek.value / 1000 * v.duration; });
       seek.addEventListener('change', function () { seek._drag = false; seek.blur(); });
       sp.addEventListener('click', function () { v.playbackRate = v.playbackRate === 1 ? 2 : 1; sp.textContent = v.playbackRate + '×'; sp.classList.toggle('on', v.playbackRate !== 1); });
-      mu.addEventListener('click', function () { v.muted = !v.muted; mu.textContent = v.muted ? '🔇' : '🔊'; });
+      mu.addEventListener('click', function () { v.muted = !v.muted; mu.textContent = v.muted ? '🔇 Sound' : '🔊 On'; mu.classList.toggle('on', !v.muted); });
     }
     function wireYT(t) {
       var b = t.querySelector('.v-big.yt'); if (!b) return;
