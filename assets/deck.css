@@ -948,3 +948,25 @@ body.admin .adm-mv { display: grid; place-items: center; }
 .al strong { margin-top: auto; font-size: 40px; font-weight: 800; letter-spacing: -.03em; color: var(--key); line-height: 1; }
 .al:nth-child(-n+2) { border-color: rgba(255,181,71,.6); background: linear-gradient(180deg, rgba(255,181,71,.10), var(--ink-2) 60%); }
 .al:nth-child(-n+2) strong { font-size: 48px; text-shadow: 0 0 30px rgba(255,181,71,.35); }
+
+/* ---------- Life at ZICA Pune ---------- */
+.life { display: grid; grid-template-columns: 470px 1fr; gap: 50px; margin-top: 40px; }
+.life-tabs { list-style: none; align-self: center; }
+.life-tabs li { padding: 20px 24px; border-left: 3px solid var(--line); transition: all .4s; }
+.life-tabs li b { display: block; font-size: 36px; font-weight: 750; letter-spacing: -.02em; color: #4a4f66; transition: color .4s; }
+.life-tabs li span { display: block; font-size: 20px; color: #3a3f55; margin-top: 6px; line-height: 1.35; transition: color .4s; }
+.life-tabs li.on { border-color: var(--key); background: linear-gradient(90deg, rgba(255,181,71,.09), transparent); }
+.life-tabs li.on b { color: var(--text); } .life-tabs li.on span { color: var(--mute); }
+.life-tabs li.done b { color: var(--mute); }
+.life-stage { position: relative; height: 560px; }
+.life-set { position: absolute; inset: 0; display: grid; gap: 12px; pointer-events: none; }
+.life-set img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid var(--line); opacity: 0; transform: scale(.94) translateY(16px); transition: opacity .5s, transform .7s var(--ease); }
+.life-set.on img { opacity: 1; transform: none; transition-delay: calc(var(--j) * 80ms); }
+.m-visit { grid-template-columns: repeat(5, 1fr); grid-template-rows: 1fr 1fr; }
+.m-visit img:nth-child(6) { grid-column: span 2; grid-row: span 2; order: -1; }
+.m-talk { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+.m-mc { grid-template-columns: repeat(3, 1fr); padding: 0 40px; }
+.m-mc img { object-fit: contain; background: #0c0d12; border: 0; }
+.life-events { display: flex; align-items: center; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+.life-events span { font: 500 16px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #5f6579; margin-right: 6px; }
+.life-events b { font-size: 21px; font-weight: 650; padding: 8px 16px; border: 1px solid var(--line); background: var(--ink-2); }

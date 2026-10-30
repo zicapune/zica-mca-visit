@@ -1022,6 +1022,14 @@
   })();
 
 
+  /* ---- Life at ZICA: one set of real photos per click ---- */
+  hooks.life = {
+    step: function (s, st) {
+      $$('.life-tabs li', s).forEach(function (li, k) { li.classList.toggle('on', k === st); li.classList.toggle('done', k < st); });
+      $$('.life-set', s).forEach(function (x, k) { x.classList.toggle('on', k === st); });
+    }
+  };
+
   /* ---- Industry flow: playhead runs the 7 stages on entry ---- */
   hooks.flow = {
     enter: function (s) { var f = s.querySelector('.flow'); f.classList.remove('go'); void f.offsetWidth; requestAnimationFrame(function () { f.classList.add('go'); }); },
