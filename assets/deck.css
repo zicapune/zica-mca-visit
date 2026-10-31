@@ -1024,11 +1024,13 @@ body.admin .adm-mv { display: grid; place-items: center; }
 #s-demo { padding-top: 96px; }
 #s-demo .demo-h { font-size: 72px; margin-top: 12px; }
 .demo-sub { font-size: 22px; color: var(--mute); margin-top: 10px; }
-.lib { display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr 1fr; gap: 14px; margin-top: 26px; position: relative; z-index: 2; }
+.lib { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr; gap: 12px; margin-top: 26px; position: relative; z-index: 2; }
 .lib-card { display: flex; flex-direction: column; background: rgba(21,23,31,.94); border: 1px solid var(--line); min-width: 0;
   opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .6s var(--ease); }
 .slide.active .lib-card { opacity: 1; transform: none; transition-delay: calc(.15s + var(--i) * 90ms); }
 .lib-card.hero { border-color: rgba(255,181,71,.7); box-shadow: 0 0 0 1px rgba(255,181,71,.2), 0 20px 60px rgba(0,0,0,.4); }
+.lib-card.wip { border-style: dashed; border-color: rgba(120,200,255,.55); }
+.lib-card.wip .sc-k { color: #7cc8ff; }
 .lib-card img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; border-bottom: 1px solid var(--line); }
 .lib-body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
 .lib-card .sc-k { font: 600 13px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--key); }
