@@ -742,6 +742,16 @@ def water_material(deep=(0.01, 0.12, 0.16), clear=True):
         P.inputs['Transmission Weight'].default_value = 0.9
     co = obj_coords(N)
     n = noise_tex(N, L, 0.6, 4, 0.5, co)
+    try:                                   # moving waves: 4D noise, W animated over the shot
+        n.noise_dimensions = '4D'
+        wv = n.inputs['W']
+        wv.default_value = 0.0; wv.keyframe_insert('default_value', frame=1)
+        wv.default_value = 3.0; wv.keyframe_insert('default_value', frame=360)
+        for fc in fcurves_of(m.node_tree.animation_data.action):
+            for kp in fc.keyframe_points:
+                kp.interpolation = 'LINEAR'
+    except Exception:
+        pass
     L.new(bump(N, L, n.outputs['Fac'], 0.15, 0.4), P.inputs['Normal'])
     return m
 
@@ -936,34 +946,40 @@ def build_terrain_world(kind, s):
     palm_leaf = flat_mat('ZICA Palm leaves', (0.18, 0.35, 0.08), 0.6)
     bark = flat_mat('ZICA Bark', (0.12, 0.07, 0.04), 0.9)
     rock_m = mat_lib('stone', 0.4, seed=s.seed)
-    n = int(s.density * {'ISLAND': 500, 'DESERT': 160, 'SNOW': 600, 'FOREST': 1400}[kind] * (0.6 + 0.4 * s.detail))
+    peak = max(h(x * size / 16, y * size / 16) for x in range(-7, 8) for y in range(-7, 8))
+    trees = getattr(s, 'trees', s.density)
+    n = int(trees * {'ISLAND': 900, 'DESERT': 220, 'SNOW': 900, 'FOREST': 1600}[kind] * (0.6 + 0.4 * s.detail))
+    top = water + (peak - water) * getattr(s, 'tree_line', 0.7)      # trees stop at this height
+    slope_max = getattr(s, 'tree_slope', 0.7)
     rocks = [asset_rock(c, rock_m, i) for i in range(3)]
     for r_ in rocks: r_.hide_render = True; r_.hide_viewport = True
+    placed = 0
     if kind == 'ISLAND':
         palms = [asset_palm(c, palm_leaf, bark)]; broad = [asset_broadleaf(c, leaf, bark)]
-        scatter(c, palms, n // 3, size, h, lambda x, y, z, rr: (water + 0.4 < z < water + 4) and slope_at(h, x, y) < 0.5, s.seed)
-        scatter(c, broad, n, size, h, lambda x, y, z, rr: (water + 3 < z < water + 22) and slope_at(h, x, y) < 0.7, s.seed + 1)
+        placed += scatter(c, palms, n // 3, size, h, lambda x, y, z, rr: (water + 0.4 < z < min(water + 4, top)) and slope_at(h, x, y) < slope_max * 0.7, s.seed)
+        placed += scatter(c, broad, n, size, h, lambda x, y, z, rr: (water + 3 < z < top) and slope_at(h, x, y) < slope_max, s.seed + 1)
+        scatter(c, rocks, int(n * 0.12), size, h, lambda x, y, z, rr: z > water - 0.5 and (z > top or slope_at(h, x, y) > slope_max), s.seed + 2, (0.6, 2.5))
     elif kind == 'DESERT':
         cac = [asset_cactus(c, flat_mat('ZICA Cactus', (0.15, 0.3, 0.12), 0.6))]
-        scatter(c, cac, n, size, h, lambda x, y, z, rr: slope_at(h, x, y) < 0.25 and z < 8, s.seed)
+        placed += scatter(c, cac, n, size, h, lambda x, y, z, rr: slope_at(h, x, y) < slope_max * 0.35 and z < min(8, top), s.seed)
         scatter(c, rocks, n // 2, size, h, lambda x, y, z, rr: True, s.seed + 2, (0.6, 3.0))
     elif kind == 'SNOW':
         pines = [asset_pine(c, pine_leaf, bark)]
-        scatter(c, pines, n, size, h, lambda x, y, z, rr: (water + 1 < z < 16) and slope_at(h, x, y) < 0.6, s.seed)
+        placed += scatter(c, pines, n, size, h, lambda x, y, z, rr: (water + 1 < z < top) and slope_at(h, x, y) < slope_max * 0.85, s.seed)
         scatter(c, rocks, n // 4, size, h, lambda x, y, z, rr: z > water, s.seed + 2, (1.0, 4.0))
     else:
         pines = [asset_pine(c, pine_leaf, bark)]; broad = [asset_broadleaf(c, leaf, bark)]
-        scatter(c, pines + broad + broad, n, size, h, lambda x, y, z, rr: z > water + 0.6 and slope_at(h, x, y) < 0.8, s.seed)
+        placed += scatter(c, pines + broad + broad, n, size, h, lambda x, y, z, rr: water + 0.6 < z < top and slope_at(h, x, y) < slope_max * 1.1, s.seed)
         scatter(c, rocks, n // 8, size, h, lambda x, y, z, rr: z > water - 1, s.seed + 2, (0.5, 2.2))
+    bpy.context.scene['zica_info'] = 'Land read: water %.0f m, peak %.0f m. Trees grow up to %.0f m on slopes under %d deg: %d placed.' % (
+        water, peak, top, round(math.degrees(math.atan(slope_max))), placed)
     elev, az, energy, scol = B['sun']
     add_sun(c, s.sun_height if s.sun_height else elev, az, energy, scol)
     set_world(*B['sky'], strength=1.0)
     fog_box(c, (size * 1.4, size * 1.4, 120), 40, 0.0015 * s.fog * (2 if kind == 'FOREST' else 1), B['fog'])
-    peak = max(h(x * size / 8, y * size / 8) for x in range(-3, 4) for y in range(-3, 4))
-    if kind == 'ISLAND':   # pull back so the whole island, beach and lagoon are in the shot
-        orbit_camera(c, (0, 0, max(water, 0) + 2), size * 0.95, max(peak, 10) * 1.1 + size * 0.3, lens=30, sweep_deg=50)
-    else:
-        orbit_camera(c, (0, 0, max(water, 0) + 4), size * 0.62, max(peak, 10) * 1.05 + size * 0.12, lens=30, sweep_deg=50)
+    shot(c, s, (0, 0, max(water, 0) + 2), size * (0.95 if kind == 'ISLAND' else 0.62),
+         max(peak, 10) * 1.1 + size * (0.3 if kind == 'ISLAND' else 0.12),
+         walk=lambda: terrain_flyover(c, size, h, water, peak))
     return c
 
 
@@ -1066,7 +1082,9 @@ def build_neon_city(s):
     set_world((0.01, 0.012, 0.04), (0.06, 0.03, 0.08), 1.0, stars=True)
     moon = add_sun(c, 40, 30, 0.3, (0.6, 0.7, 1.0))
     fog_box(c, (HALF * 2.8, HALF * 2.8, 200), 100, 0.0022 * s.fog, (0.55, 0.62, 1.0))
-    orbit_camera(c, (0, 0, 35), HALF * 1.35, 30 + HALF * 0.12, lens=26, sweep_deg=70)
+    bpy.context.scene['zica_info'] = '%d x %d blocks, %d cars. Camera: %s.' % (BLOCKS, BLOCKS, int(20 + 40 * s.density), getattr(s, 'cam_move', 'ARC').lower())
+    road_x = -HALF + PITCH * (BLOCKS // 2)          # centre line of the middle avenue
+    shot(c, s, (0, 0, 35), HALF * 1.35, 30 + HALF * 0.12, lens=26, walk=lambda: city_walk(c, road_x, HALF))
     return c
 
 
@@ -1173,6 +1191,70 @@ WORLD_TYPES = [
     ('SNOW', 'Snowy Peaks', 'Ridged mountains, snow line, pine forest, lake', lambda s: build_terrain_world('SNOW', s)),
     ('FOREST', 'Forest Valley', 'Rolling hills, river, dense mixed forest, haze', lambda s: build_terrain_world('FOREST', s)),
 ]
+
+
+# ---- camera moves -----------------------------------------------------------------------
+def shot(c, s, target, radius, height, lens=30, walk=None):
+    """ARC = slow arc, SPIN = full 360 turntable, WALK = cinematic walkthrough / flyover."""
+    mode = getattr(s, 'cam_move', 'ARC')
+    if mode == 'WALK' and walk is not None:
+        walk()
+    elif mode == 'SPIN':
+        cam = orbit_camera(c, target, radius, height, lens=lens, frames=360, start_deg=-35, sweep_deg=360)
+        make_linear(cam.parent)
+    else:
+        orbit_camera(c, target, radius, height, lens=lens, sweep_deg=60)
+
+
+def _path_camera(c, pts, aims, lens, frames):
+    """Camera that follows key points and looks at moving aim points."""
+    scene = bpy.context.scene
+    cd = bpy.data.cameras.new('Camera'); cd.lens = lens; cd.clip_end = 50000; cd.clip_start = 0.1
+    cam = link(bpy.data.objects.new('Camera', cd), c)
+    tgt = link(bpy.data.objects.new('Camera aim', None), c)
+    con = cam.constraints.new('TRACK_TO'); con.target = tgt; con.track_axis = 'TRACK_NEGATIVE_Z'; con.up_axis = 'UP_Y'
+    n = len(pts)
+    for i, (p, a) in enumerate(zip(pts, aims)):
+        f = 1 + round(i * (frames - 1) / (n - 1))
+        cam.location = p; cam.keyframe_insert('location', frame=f)
+        tgt.location = a; tgt.keyframe_insert('location', frame=f)
+    scene.frame_start, scene.frame_end = 1, frames
+    scene.camera = cam
+    scene.frame_set(1)
+    return cam
+
+
+def city_walk(c, road_x, HALF):
+    """Street-level run down the main avenue between the towers, then a crane up looking over the skyline."""
+    y0, y1 = -HALF - 40, HALF * 0.5
+    pts, aims = [], []
+    for i in range(11):
+        t = i / 10
+        y = y0 + (y1 - y0) * t
+        rise = (max(0, t - 0.65) / 0.35) ** 2
+        z = 4.5 + 2.5 * math.sin(t * math.pi) + rise * 120
+        x = road_x + math.sin(t * 6.0) * 1.0
+        pts.append((x, y, z))
+        aims.append((road_x + math.sin(t * 6.0 + 0.8) * 2, y + 60 + rise * 40, (z * 0.7 + 4) * (1 - rise) + 25 * rise))
+    _path_camera(c, pts, aims, 22, 360)
+
+
+def terrain_flyover(c, size, h, water, peak):
+    """Low drone flight in from the sea, over the land, turning to keep the land in frame."""
+    pts, aims = [], []
+    R = size * 0.5
+    for i in range(11):
+        t = i / 10
+        ang = math.radians(-120 + 150 * t)                 # curve around and across the land
+        rad = R * (1.15 - 0.85 * math.sin(t * math.pi))
+        x, y = math.cos(ang) * rad, math.sin(ang) * rad
+        ground = max(h(x + dx, y + dy) for dx in (-10, 0, 10) for dy in (-10, 0, 10))
+        z = max(ground, water) + 30 + 14 * math.sin(t * math.pi)
+        pts.append((x, y, z))
+        ahead = math.radians(-120 + 150 * min(1, t + 0.25))
+        ax, ay = math.cos(ahead) * R * 0.35, math.sin(ahead) * R * 0.35
+        aims.append((ax, ay, max(water, 0) + peak * 0.25))
+    _path_camera(c, pts, aims, 24, 360)
 
 
 # ---------------------------------------------------------------------------
@@ -1645,6 +1727,13 @@ class ZICA_Settings(bpy.types.PropertyGroup):
     sun_height: FloatProperty(name='Sun height', default=0.0, min=0.0, max=80.0, description='0 = the world\'s own time of day', update=_live_world)
     fog: FloatProperty(name='Haze', default=0.5, min=0.0, max=1.0, subtype='FACTOR', update=_live_world)
     water: FloatProperty(name='Water level', default=0.0, min=-1.0, max=1.0, update=_live_world)
+    trees: FloatProperty(name='Trees', default=0.6, min=0.0, max=1.0, subtype='FACTOR', description='How many trees (they only grow where the land allows)', update=_live_world)
+    tree_line: FloatProperty(name='Tree line', default=0.7, min=0.1, max=1.0, subtype='FACTOR', description='Highest point trees can grow (fraction of the peak height)', update=_live_world)
+    tree_slope: FloatProperty(name='Max slope', default=0.7, min=0.15, max=1.5, description='Steeper ground than this stays bare rock', update=_live_world)
+    cam_move: EnumProperty(name='Camera move', default='ARC', update=_live_world, items=[
+        ('ARC', 'Slow arc', 'Gentle 60 degree arc'),
+        ('SPIN', 'Spin 360', 'Full turn around the world, 15 s'),
+        ('WALK', 'Walkthrough', 'City: street-level run down the avenue, then up over the skyline. Land: low drone flight')])
     # image -> world
     img_path: StringProperty(name='Image', subtype='FILE_PATH', update=_live_image)
     img_mode: EnumProperty(name='Mode', default='TERRAIN', update=_live_image, items=[
@@ -1787,6 +1876,33 @@ class ZICA_OT_look(bpy.types.Operator):
         rendered_view(); return {'FINISHED'}
 
 
+class ZICA_OT_cam_view(bpy.types.Operator):
+    bl_idname = 'zica.cam_view'; bl_label = 'Camera view'
+    bl_description = 'Look through the scene camera (Numpad 0)'
+
+    def execute(self, ctx):
+        for a in ctx.screen.areas:
+            if a.type == 'VIEW_3D':
+                a.spaces.active.region_3d.view_perspective = 'CAMERA'
+                a.tag_redraw()
+        return {'FINISHED'}
+
+
+class ZICA_OT_play_cam(bpy.types.Operator):
+    bl_idname = 'zica.play_cam'; bl_label = 'Play camera'
+    bl_description = 'Look through the camera and play the camera move (press again or Esc to stop)'
+
+    def execute(self, ctx):
+        sc = ctx.scene
+        if ctx.screen.is_animation_playing:
+            bpy.ops.screen.animation_cancel(restore_frame=False)
+            return {'FINISHED'}
+        bpy.ops.zica.cam_view()
+        sc.frame_set(sc.frame_start)
+        bpy.ops.screen.animation_play()
+        return {'FINISHED'}
+
+
 class ZICA_OT_preview(bpy.types.Operator):
     bl_idname = 'zica.preview'; bl_label = 'Render preview'
     bl_description = 'Quick still at 40% size, shown in this panel'
@@ -1847,9 +1963,28 @@ class ZICA_PT_worlds(_Base, bpy.types.Panel):
         s = ctx.scene.zica; L_ = self.layout
         L_.prop(s, 'world_type', text='')
         c = L_.column(align=True)
-        for p in ('world_size', 'density', 'detail', 'seed', 'sun_height', 'fog', 'water'):
+        terrain = s.world_type in ('ISLAND', 'DESERT', 'SNOW', 'FOREST')
+        keys = ('world_size', 'density', 'detail', 'seed', 'sun_height', 'fog', 'water')
+        if terrain:
+            keys = ('world_size', 'trees', 'tree_line', 'tree_slope', 'detail', 'seed', 'sun_height', 'fog', 'water')
+        for p in keys:
             c.prop(s, p, slider=p not in ('seed',))
+        L_.prop(s, 'cam_move')
         L_.operator('zica.build_world', icon='WORLD')
+        r = L_.row(align=True)
+        r.operator('zica.play_cam', icon='PLAY')
+        r.operator('zica.cam_view', icon='CAMERA_DATA')
+        info = ctx.scene.get('zica_info')
+        if info:
+            b = L_.box().column(align=True)
+            words, line = info.split(), ''
+            for wd in words:
+                if len(line) + len(wd) > 44:
+                    b.label(text=line); line = wd
+                else:
+                    line = (line + ' ' + wd).strip()
+            if line:
+                b.label(text=line)
 
 
 class ZICA_PT_image(_Base, bpy.types.Panel):
@@ -1922,7 +2057,7 @@ _MODULE_CLASSES = {
     'props': (ZICA_OT_build_prop, ZICA_PT_props),
     'surfaces': (ZICA_OT_build_surface, ZICA_PT_surfaces),
 }
-CLASSES = (ZICA_Settings, ZICA_OT_look, ZICA_OT_preview, ZICA_OT_render, ZICA_OT_render_anim, ZICA_PT_main) + \
+CLASSES = (ZICA_Settings, ZICA_OT_look, ZICA_OT_cam_view, ZICA_OT_play_cam, ZICA_OT_preview, ZICA_OT_render, ZICA_OT_render_anim, ZICA_PT_main) + \
     tuple(c for k in ('worlds', 'image', 'props', 'surfaces') if k in ZICA_MODULES for c in _MODULE_CLASSES[k])
 
 

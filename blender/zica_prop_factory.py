@@ -1299,6 +1299,13 @@ class ZICA_Settings(bpy.types.PropertyGroup):
     sun_height: FloatProperty(name='Sun height', default=0.0, min=0.0, max=80.0, description='0 = the world\'s own time of day', update=_live_world)
     fog: FloatProperty(name='Haze', default=0.5, min=0.0, max=1.0, subtype='FACTOR', update=_live_world)
     water: FloatProperty(name='Water level', default=0.0, min=-1.0, max=1.0, update=_live_world)
+    trees: FloatProperty(name='Trees', default=0.6, min=0.0, max=1.0, subtype='FACTOR', description='How many trees (they only grow where the land allows)', update=_live_world)
+    tree_line: FloatProperty(name='Tree line', default=0.7, min=0.1, max=1.0, subtype='FACTOR', description='Highest point trees can grow (fraction of the peak height)', update=_live_world)
+    tree_slope: FloatProperty(name='Max slope', default=0.7, min=0.15, max=1.5, description='Steeper ground than this stays bare rock', update=_live_world)
+    cam_move: EnumProperty(name='Camera move', default='ARC', update=_live_world, items=[
+        ('ARC', 'Slow arc', 'Gentle 60 degree arc'),
+        ('SPIN', 'Spin 360', 'Full turn around the world, 15 s'),
+        ('WALK', 'Walkthrough', 'City: street-level run down the avenue, then up over the skyline. Land: low drone flight')])
     # image -> world
     img_path: StringProperty(name='Image', subtype='FILE_PATH', update=_live_image)
     img_mode: EnumProperty(name='Mode', default='TERRAIN', update=_live_image, items=[
@@ -1441,6 +1448,33 @@ class ZICA_OT_look(bpy.types.Operator):
         rendered_view(); return {'FINISHED'}
 
 
+class ZICA_OT_cam_view(bpy.types.Operator):
+    bl_idname = 'zica.cam_view'; bl_label = 'Camera view'
+    bl_description = 'Look through the scene camera (Numpad 0)'
+
+    def execute(self, ctx):
+        for a in ctx.screen.areas:
+            if a.type == 'VIEW_3D':
+                a.spaces.active.region_3d.view_perspective = 'CAMERA'
+                a.tag_redraw()
+        return {'FINISHED'}
+
+
+class ZICA_OT_play_cam(bpy.types.Operator):
+    bl_idname = 'zica.play_cam'; bl_label = 'Play camera'
+    bl_description = 'Look through the camera and play the camera move (press again or Esc to stop)'
+
+    def execute(self, ctx):
+        sc = ctx.scene
+        if ctx.screen.is_animation_playing:
+            bpy.ops.screen.animation_cancel(restore_frame=False)
+            return {'FINISHED'}
+        bpy.ops.zica.cam_view()
+        sc.frame_set(sc.frame_start)
+        bpy.ops.screen.animation_play()
+        return {'FINISHED'}
+
+
 class ZICA_OT_preview(bpy.types.Operator):
     bl_idname = 'zica.preview'; bl_label = 'Render preview'
     bl_description = 'Quick still at 40% size, shown in this panel'
@@ -1501,9 +1535,28 @@ class ZICA_PT_worlds(_Base, bpy.types.Panel):
         s = ctx.scene.zica; L_ = self.layout
         L_.prop(s, 'world_type', text='')
         c = L_.column(align=True)
-        for p in ('world_size', 'density', 'detail', 'seed', 'sun_height', 'fog', 'water'):
+        terrain = s.world_type in ('ISLAND', 'DESERT', 'SNOW', 'FOREST')
+        keys = ('world_size', 'density', 'detail', 'seed', 'sun_height', 'fog', 'water')
+        if terrain:
+            keys = ('world_size', 'trees', 'tree_line', 'tree_slope', 'detail', 'seed', 'sun_height', 'fog', 'water')
+        for p in keys:
             c.prop(s, p, slider=p not in ('seed',))
+        L_.prop(s, 'cam_move')
         L_.operator('zica.build_world', icon='WORLD')
+        r = L_.row(align=True)
+        r.operator('zica.play_cam', icon='PLAY')
+        r.operator('zica.cam_view', icon='CAMERA_DATA')
+        info = ctx.scene.get('zica_info')
+        if info:
+            b = L_.box().column(align=True)
+            words, line = info.split(), ''
+            for wd in words:
+                if len(line) + len(wd) > 44:
+                    b.label(text=line); line = wd
+                else:
+                    line = (line + ' ' + wd).strip()
+            if line:
+                b.label(text=line)
 
 
 class ZICA_PT_image(_Base, bpy.types.Panel):
@@ -1576,7 +1629,7 @@ _MODULE_CLASSES = {
     'props': (ZICA_OT_build_prop, ZICA_PT_props),
     'surfaces': (ZICA_OT_build_surface, ZICA_PT_surfaces),
 }
-CLASSES = (ZICA_Settings, ZICA_OT_look, ZICA_OT_preview, ZICA_OT_render, ZICA_OT_render_anim, ZICA_PT_main) + \
+CLASSES = (ZICA_Settings, ZICA_OT_look, ZICA_OT_cam_view, ZICA_OT_play_cam, ZICA_OT_preview, ZICA_OT_render, ZICA_OT_render_anim, ZICA_PT_main) + \
     tuple(c for k in ('worlds', 'image', 'props', 'surfaces') if k in ZICA_MODULES for c in _MODULE_CLASSES[k])
 
 
